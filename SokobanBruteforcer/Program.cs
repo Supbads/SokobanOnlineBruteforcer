@@ -23,9 +23,18 @@ public class Program
         //_currentSolutions = SokobanJuniorLayouts.SokobanJunior15Solutions;
         //Level._solutions = _currentSolutions;
         //var initialLevel = new Level(SokobanJuniorLayouts.SokobanJunior15, null, 0);
-        _currentSolutions = GridLayouts.Level57SolutionIndices;
+        _currentSolutions = EmptyHolesTest. LevelHolyHow4Solutions;
         Level._solutions = _currentSolutions;
-        var initialLevel = new Level(GridLayouts.Level57, null, 0);
+        var initialLevel = new Level(EmptyHolesTest.LevelHolyHow4, null, 0);
+        foreach (var solution in _currentSolutions)
+        {
+            if(initialLevel.Grid[solution.Key.x, solution.Key.y] == 0)
+            {
+                throw new Exception("Finishing tile is a wall. Verify setup");
+            }
+        }
+        
+
         _xLength = initialLevel.Grid.GetLength(0);
         _yLength = initialLevel.Grid.GetLength(1);
 
@@ -39,8 +48,8 @@ public class Program
         int attempts = 0;
         int duplicate = 0;
         bool print = false;
-        bool manualMode = false;
-        int maxSteps = 210;
+        bool manualMode = true;
+        int maxSteps = 115;
         var sw = Stopwatch.StartNew();       
 
 
@@ -171,7 +180,7 @@ public class Program
         {
             var x = heroIndex.x;
             var y = heroIndex.y - 1;
-            if (y >= 0 && level.Grid[x, y] != GridLayouts.Wall)
+            if (y >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
             {
                 if (level.Grid[x, y] == GridLayouts.EmptyTile)
                 {
@@ -184,7 +193,18 @@ public class Program
                 }
                 else
                 {
-                    if (y - 1 >= 0 && level.Grid[x, y - 1] == GridLayouts.EmptyTile)
+                    if (y - 1 >= 0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x, y - 1] == GridLayouts.Hole)
+                    {
+                        var copyLevel = CopyLevel(level.Grid);
+
+                        copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
+                        copyLevel[x, y - 1] = GridLayouts.EmptyTile;
+                        copyLevel[x, y] = GridLayouts.HeroTile;
+
+                        if (!ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1), true))
+                            _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                    }
+                    else if (y - 1 >= 0 && level.Grid[x, y - 1] == GridLayouts.EmptyTile)
                     {
                         var copyLevel = CopyLevel(level.Grid);
 
@@ -202,7 +222,7 @@ public class Program
         {
             var x = heroIndex.x - 1;
             var y = heroIndex.y;
-            if (x >= 0 && level.Grid[x, y] != GridLayouts.Wall)
+            if (x >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
             {
                 if (level.Grid[x, y] == GridLayouts.EmptyTile)
                 {
@@ -215,7 +235,18 @@ public class Program
                 }
                 else
                 {
-                    if (x - 1 >= 0 && level.Grid[x - 1, y] == GridLayouts.EmptyTile)
+                    if (x - 1 >= 0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x - 1, y] == GridLayouts.Hole)
+                    {
+                        var copyLevel = CopyLevel(level.Grid);
+
+                        copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
+                        copyLevel[x - 1, y] = GridLayouts.EmptyTile;
+                        copyLevel[x, y] = GridLayouts.HeroTile;
+
+                        if (!ExcludeSolution(copyLevel, level.StepsCount, (x - x, y), true))
+                            _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                    }
+                    else if (x - 1 >= 0 && level.Grid[x - 1, y] == GridLayouts.EmptyTile)
                     {
                         var copyLevel = CopyLevel(level.Grid);
 
@@ -234,7 +265,7 @@ public class Program
         {
             var x = heroIndex.x + 1;
             var y = heroIndex.y;
-            if (x < _xLength && level.Grid[x, y] != GridLayouts.Wall)
+            if (x < _xLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
             {
                 if (level.Grid[x, y] == GridLayouts.EmptyTile)
                 {
@@ -248,7 +279,18 @@ public class Program
                 }
                 else
                 {
-                    if (x + 1 < _xLength && level.Grid[x + 1, y] == GridLayouts.EmptyTile)
+                    if (x + 1 >= 0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x + 1, y] == GridLayouts.Hole)
+                    {
+                        var copyLevel = CopyLevel(level.Grid);
+
+                        copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
+                        copyLevel[x + 1, y] = GridLayouts.EmptyTile;
+                        copyLevel[x, y] = GridLayouts.HeroTile;
+
+                        if (!ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y), true))
+                            _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                    }
+                    else if (x + 1 < _xLength && level.Grid[x + 1, y] == GridLayouts.EmptyTile)
                     {
                         var copyLevel = CopyLevel(level.Grid);
                         copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
@@ -265,7 +307,7 @@ public class Program
         {
             var x = heroIndex.x;
             var y = heroIndex.y + 1;
-            if (y < _yLength && level.Grid[x, y] != GridLayouts.Wall)
+            if (y < _yLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
             {
                 if (level.Grid[x, y] == GridLayouts.EmptyTile)
                 {
@@ -278,7 +320,18 @@ public class Program
                 }
                 else
                 {
-                    if (y + 1 < _yLength && level.Grid[x, y + 1] == GridLayouts.EmptyTile)
+                    if (y + 1 >= 0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x, y + 1] == GridLayouts.Hole)
+                    {
+                        var copyLevel = CopyLevel(level.Grid);
+
+                        copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
+                        copyLevel[x, y + 1] = GridLayouts.EmptyTile;
+                        copyLevel[x, y] = GridLayouts.HeroTile;
+
+                        if (!ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1), true))
+                            _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                    }
+                    else if (y + 1 < _yLength && level.Grid[x, y + 1] == GridLayouts.EmptyTile)
                     {
                         var copyLevel = CopyLevel(level.Grid);
                         copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
@@ -310,7 +363,7 @@ public class Program
         //try left
         var x = heroIndex.x;
         var y = heroIndex.y - 1;
-        if (y >= 0 && level.Grid[x, y] != GridLayouts.Wall)
+        if (y >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
         {
             if (level.Grid[x, y] == GridLayouts.EmptyTile)
             {
@@ -323,7 +376,18 @@ public class Program
             }
             else
             {
-                if (y - 1 >= 0 && level.Grid[x, y - 1] == GridLayouts.EmptyTile)
+                if(y - 1 >=0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x, y - 1] == GridLayouts.Hole)
+                {
+                    var copyLevel = CopyLevel(level.Grid);
+
+                    copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
+                    copyLevel[x, y - 1] = GridLayouts.EmptyTile;
+                    copyLevel[x, y] = GridLayouts.HeroTile;
+
+                    if (!ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1), true))
+                        _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                }
+                else if (y - 1 >= 0 && level.Grid[x, y - 1] == GridLayouts.EmptyTile)
                 {
                     var copyLevel = CopyLevel(level.Grid);
 
@@ -340,7 +404,7 @@ public class Program
         //try up
         x = heroIndex.x - 1;
         y = heroIndex.y;
-        if (x >= 0 && level.Grid[x, y] != GridLayouts.Wall)
+        if (x >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
         {
             if (level.Grid[x, y] == GridLayouts.EmptyTile)
             {
@@ -353,7 +417,18 @@ public class Program
             }
             else
             {
-                if (x - 1 >= 0 && level.Grid[x - 1, y] == GridLayouts.EmptyTile)
+                if (x - 1 >= 0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x - 1, y] == GridLayouts.Hole)
+                {
+                    var copyLevel = CopyLevel(level.Grid);
+
+                    copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
+                    copyLevel[x - 1, y] = GridLayouts.EmptyTile;
+                    copyLevel[x, y] = GridLayouts.HeroTile;
+
+                    if (!ExcludeSolution(copyLevel, level.StepsCount, (x - x, y), true))
+                        _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                }
+                else if (x - 1 >= 0 && level.Grid[x - 1, y] == GridLayouts.EmptyTile)
                 {
                     var copyLevel = CopyLevel(level.Grid);
 
@@ -371,7 +446,7 @@ public class Program
         //try right
         x = heroIndex.x;
         y = heroIndex.y + 1;
-        if (y < _yLength && level.Grid[x, y] != GridLayouts.Wall)
+        if (y < _yLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
         {
             if (level.Grid[x, y] == GridLayouts.EmptyTile)
             {
@@ -384,7 +459,18 @@ public class Program
             }
             else
             {
-                if (y + 1 < _yLength && level.Grid[x, y + 1] == GridLayouts.EmptyTile)
+                if (y + 1 >= 0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x, y + 1] == GridLayouts.Hole)
+                {
+                    var copyLevel = CopyLevel(level.Grid);
+
+                    copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
+                    copyLevel[x, y + 1] = GridLayouts.EmptyTile;
+                    copyLevel[x, y] = GridLayouts.HeroTile;
+
+                    if (!ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1), true))
+                        _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                }
+                else if (y + 1 < _yLength && level.Grid[x, y + 1] == GridLayouts.EmptyTile)
                 {
                     var copyLevel = CopyLevel(level.Grid);
                     copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
@@ -400,7 +486,7 @@ public class Program
         // try down
         x = heroIndex.x + 1;
         y = heroIndex.y;
-        if (x < _xLength && level.Grid[x, y] != GridLayouts.Wall)
+        if (x < _xLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
         {
             if (level.Grid[x, y] == GridLayouts.EmptyTile)
             {
@@ -414,7 +500,18 @@ public class Program
             }
             else
             {
-                if (x + 1 < _xLength && level.Grid[x + 1, y] == GridLayouts.EmptyTile)
+                if (x + 1 >= 0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x + 1, y] == GridLayouts.Hole)
+                {
+                    var copyLevel = CopyLevel(level.Grid);
+
+                    copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
+                    copyLevel[x + 1, y] = GridLayouts.EmptyTile;
+                    copyLevel[x, y] = GridLayouts.HeroTile;
+
+                    if (!ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y), true))
+                        _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                }
+                else if (x + 1 < _xLength && level.Grid[x + 1, y] == GridLayouts.EmptyTile)
                 {
                     var copyLevel = CopyLevel(level.Grid);
                     copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
@@ -465,7 +562,7 @@ public class Program
 
     static int excludedSolutions = 0;
 
-    static bool ExcludeSolution(byte[,] level, short stepsCount, (int x, int y)? boxIndices = null)
+    static bool ExcludeSolution(byte[,] level, short stepsCount, (int x, int y)? boxIndices = null, bool skipWallCheecks = false)
     {
         var snapshot = Level.GenerateSnapshot(level);
         if (!boxIndices.HasValue)
@@ -495,7 +592,7 @@ public class Program
         else
         {
             //check if all boxes are reachable from current solution
-            if (WallChecksInvalidateSolution(level, boxIndices.Value))
+            if (!skipWallCheecks && WallChecksInvalidateSolution(level, boxIndices.Value))
             {
                 return true;
             }
@@ -534,14 +631,19 @@ public class Program
             return false;
         }
 
+        if(level[boxIndices.x, boxIndices.y] == GridLayouts.HoleBlock)
+        {
+            return false;
+        }
+
         //todo all remaining boxes have a reachable path
 
         //lvl hack
-        if (GridLayouts.Levle57InvalidationImprovement(boxIndices))
-        {
-            wallChecksFuncInvalidationsHack++;
-            return true;
-        }
+        //if (GridLayouts.Levle57InvalidationImprovement(boxIndices))
+        //{
+        //    wallChecksFuncInvalidationsHack++;
+        //    return true;
+        //}
 
         //lvl 2 hack
         //if (boxIndices.x == 1 || boxIndices.x == 6 || boxIndices.y == 1 || boxIndices.y == 6)

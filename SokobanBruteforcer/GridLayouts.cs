@@ -51,14 +51,7 @@
             (boxIndices) => boxIndices.x == 1 || boxIndices.x == 7 || boxIndices.y == 1 || boxIndices.y == 5;
 
         /* Step 195
-            Solution: DDRRDDLLUUDDRDDLUU
-            RRUULDDUULLLDDRRUD
-            LLUURRDRRDLLDDRUULUULL
-            DDRLUURRDDUULUURDD
-            LLDDRUUDDRRRUULLDURRDDLLULL
-            URRUULDDRDDRRUULRDDLLUUDD
-            RDDLUURRUULDDUULLLDDRRUD
-            LLUURRDRRDLLDDRUULUULLDDRLUURRDDRDDLUURRUUL
+            Solution: DDRRDDLLUUDDRDDLUURRUULDDUULLLDDRRUDLLUURRDRRDLLDDRUULUULLDDRLUURRDDUULUURDDLLDDRUUDDRRRUULLDURRDDLLULLURRUULDDRDDRRUULRDDLLUUDDRDDLUURRUULDDUULLLDDRRUDLLUURRDRRDLLDDRUULUULLDDRLUURRDDRDDLUURRUUL
             Attempts: 7886502, maxStepsLimits: 0, duplicate: 0
          */
 
@@ -147,6 +140,9 @@
         public static byte EmptyTile = 1;
         public static byte HeroTile = 2;
 
+        public static byte Hole = 8;
+        public static byte HoleBlock = 9;
+
         //0 = wall
         //1 = empty
         //2 = hero
@@ -189,5 +185,46 @@
         //1 = empty
         //2 = hero
         //3 = any box
+    }
+
+    public class EmptyHolesTest
+    {
+        public static byte[,] LevelHolyHow4 = new byte[,]
+        {
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //15, 18
+            { 0, 8, 1, 1, 8, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 0 },
+            { 0, 8, 1, 1, 8, 8, 8, 8, 9, 8, 9, 8, 8, 8, 8, 8, 8, 0 },
+            { 0, 8, 1, 9, 9, 8, 8, 8, 8, 9, 8, 8, 8, 8, 8, 8, 8, 0 },
+            { 0, 8, 8, 8, 9, 8, 8, 8, 8, 8, 9, 9, 8, 8, 8, 8, 8, 0 },
+            { 0, 8, 1, 9, 8, 9, 8, 9, 8, 8, 8, 9, 8, 8, 8, 8, 8, 0 },
+            { 0, 8, 1, 1, 8, 8, 8, 8, 9, 8, 9, 8, 8, 8, 8, 8, 8, 0 },
+            { 0, 2, 0, 1, 9, 9, 8, 9, 8, 8, 8, 9, 8, 9, 8, 8, 8, 0 },
+            { 0, 9, 8, 9, 9, 8, 8, 8, 8, 8, 9, 8, 8, 8, 9, 8, 8, 0 },
+            { 0, 8, 8, 8, 8, 8, 8, 9, 8, 9, 8, 8, 9, 8, 8, 8, 8, 0 },
+            { 0, 9, 8, 9, 9, 8, 9, 8, 8, 9, 8, 8, 8, 8, 9, 8, 8, 0 },
+            { 0, 8, 8, 8, 8, 8, 8, 8, 8, 8, 9, 9, 8, 8, 9, 8, 8, 0 },
+            { 0, 9, 8, 9, 9, 8, 9, 8, 8, 9, 9, 8, 8, 8, 8, 8, 8, 0 },
+            { 0, 8, 9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 1, 5, 1, 8, 8, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            //                                       ^g ^ge (13,14)
+        };
+
+        public static Dictionary<(int, int), byte> LevelHolyHow4Solutions = new Dictionary<(int, int), byte>
+        {
+            { (13, 14), 5 },
+        };
+
+        //0 = wall
+        //1 = empty
+        //2 = hero
+
+        //3 = red
+        //4 = purple 
+        //5 = green
+        //6 = dark blue
+        //7 = blue
+
+        //8 = hole
+        //9 = holeBlock
     }
 }
