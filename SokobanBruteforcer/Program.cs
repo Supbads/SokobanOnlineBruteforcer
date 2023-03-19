@@ -48,7 +48,7 @@ public class Program
         int attempts = 0;
         int duplicate = 0;
         bool print = false;
-        bool manualMode = true;
+        bool manualMode = false;
         int maxSteps = 115;
         var sw = Stopwatch.StartNew();       
 

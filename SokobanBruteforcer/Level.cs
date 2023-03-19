@@ -13,8 +13,6 @@ namespace SokobanBruteforcer
             StepsCount = stepsCount;
             HeroIndex = FindHeroIndex();
             IsSolved = IsLevelSolved(Grid);
-            
-            // actions/movement
         }
 
         public Level(byte[,] level, (int, int) heroIndex, ILevel previousLevel)
@@ -27,8 +25,21 @@ namespace SokobanBruteforcer
             HeroIndex = heroIndex;
             PreviousLevel = previousLevel;
             IsSolved = IsLevelSolved(Grid);
+        }
 
-            // actions/movement
+        public Level(byte[,] level, (int, int) heroIndex, ILevel previousLevel, bool pushed, Direction incomingDirection)
+        {
+            if (previousLevel != null)
+            {
+                StepsCount = (short)(previousLevel.StepsCount + 1);
+            }
+            Grid = level;
+            HeroIndex = heroIndex;
+            PreviousLevel = previousLevel;
+            IsSolved = IsLevelSolved(Grid);
+
+            //todo optimize add if we did not push and the direction is X, don't solve the opposite direction as it has been visited
+            
         }
 
         public bool IsSolved { get; }
@@ -68,7 +79,35 @@ namespace SokobanBruteforcer
 
         public string GenerateSnapshot()
         {
-            return GenerateSnapshot(Grid);
+            return GenerateSnapshotV2(Grid);
+            //return GenerateSnapshot(Grid);
+        }
+
+        public static string GenerateSnapshotV2(byte[,] grid)
+        {
+            string response = String.Empty;
+
+            unchecked
+            {
+                long hash = 17;
+
+                for (int i = 0; i < grid.GetLength(0); i++)
+                {
+                    for (int j = 0; j < grid.GetLength(1); j++)
+                    {
+                        if(grid[i, j] != 0)
+                        {
+                            hash = hash * 23 + Convert.ToInt64(Math.Pow(grid[i, j], i));
+                            hash = hash * 23 + Convert.ToInt64(Math.Pow(grid[i, j], j));
+                            
+                        }
+                    }
+                }
+
+                response = hash.ToString();
+            }
+
+            return response;
         }
 
         public byte GetSolvedItemsCount()

@@ -145,7 +145,7 @@
 
         //0 = wall
         //1 = empty
-        //2 = hero
+        //2 = hero  
 
         //3 = red
         //4 = purple 
