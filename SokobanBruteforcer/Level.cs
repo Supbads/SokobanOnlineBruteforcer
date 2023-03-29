@@ -79,7 +79,7 @@ namespace SokobanBruteforcer
 
         public string GenerateSnapshot()
         {
-            return GenerateSnapshotV2(Grid);
+            return GenerateSnapshotV3(Grid);
             //return GenerateSnapshot(Grid);
         }
 
@@ -163,6 +163,32 @@ namespace SokobanBruteforcer
                 .ToArray());
 
             return snapshot;
+        }
+
+        public static string GenerateSnapshotV3(byte[,] lvl)
+        {
+            var lookForObjects = _solutions.Values.ToHashSet();
+            lookForObjects.Add(GridLayouts.HeroTile);
+            lookForObjects.Add(GridLayouts.HoleBlock);
+            List<(byte obj, int x, int y)> saughtObjectsCoordinates = new List<(byte, int, int)>(_solutions.Keys.Count);
+
+            for (int i = 0; i < lvl.GetLength(0); i++)
+            {
+                for (int j = 0; j < lvl.GetLength(1); j++)
+                {
+                    if (lookForObjects.Contains(lvl[i, j]))
+                    {
+                        saughtObjectsCoordinates.Add((lvl[i, j], i, j));
+                    }
+                }
+            }
+
+            var snapshot = string.Join("", saughtObjectsCoordinates
+                .OrderBy(so => so.obj).ThenBy(so => so.x).ThenBy(so => so.y)
+                .Select(so => $"({so.x},{so.y})")
+                .ToArray());
+
+            return snapshot.GetHashCode().ToString();
         }
 
         public List<byte[,]> GetGridsChain(bool reverse = true)

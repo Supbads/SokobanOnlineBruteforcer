@@ -5,7 +5,7 @@
         public static int _xLength = Program._xLength;
         public static int _yLength = Program._yLength;
 
-        static byte[,] CopyLevel(byte[,] level)
+        public static byte[,] CopyLevel(byte[,] level)
         {
             byte[,] copyArray = new byte[_xLength, _yLength];
 

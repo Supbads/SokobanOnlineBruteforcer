@@ -5,7 +5,7 @@
         public static int _xLength = Program._xLength;
         public static int _yLength = Program._yLength;
 
-        public static void TryMoveRight(Level level, (int x, int y) heroIndex, bool runExclusionCheck = true)
+        public static void TryMoveRight(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = true)
         {
             var x = heroIndex.x;
             var y = heroIndex.y + 1;
@@ -17,7 +17,7 @@
                     copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
-                    if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount))
+                    if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
                         Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                 }
                 else
@@ -30,7 +30,7 @@
                         copyLevel[x, y + 1] = GridLayouts.EmptyTile;
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
-                        if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1), true))
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1), true))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                     }
                     else if (y + 1 < _yLength && level.Grid[x, y + 1] == GridLayouts.EmptyTile)
@@ -40,14 +40,14 @@
                         copyLevel[x, y + 1] = copyLevel[x, y];
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
-                        if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1)))
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1)))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                     }
                 }
             }
         }
 
-        public static void TryMoveDown(Level level, (int x, int y) heroIndex, bool runExclusionCheck = true)
+        public static void TryMoveDown(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = false)
         {
             var x = heroIndex.x + 1;
             var y = heroIndex.y;
@@ -60,7 +60,7 @@
                     copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
-                    if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount))
+                    if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
                         Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                 }
                 else
@@ -73,7 +73,7 @@
                         copyLevel[x + 1, y] = GridLayouts.EmptyTile;
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
-                        if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y), true))
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y), true))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                     }
                     else if (x + 1 < _xLength && level.Grid[x + 1, y] == GridLayouts.EmptyTile)
@@ -83,14 +83,14 @@
                         copyLevel[x + 1, y] = copyLevel[x, y];
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
-                        if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y)))
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y)))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                     }
                 }
             }
         }
 
-        public static void TryMoveUp(Level level, (int x, int y) heroIndex, bool runExclusionCheck = true)
+        public static void TryMoveUp(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = true)
         {
             var x = heroIndex.x - 1;
             var y = heroIndex.y;
@@ -102,7 +102,7 @@
                     copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
-                    if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount))
+                    if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
                         Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                 }
                 else
@@ -115,7 +115,7 @@
                         copyLevel[x - 1, y] = GridLayouts.EmptyTile;
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
-                        if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount, (x - x, y), true))
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x - x, y), true))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                     }
                     else if (x - 1 >= 0 && level.Grid[x - 1, y] == GridLayouts.EmptyTile)
@@ -127,14 +127,14 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
 
-                        if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount, (x - 1, y)))
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x - 1, y)))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                     }
                 }
             }
         }
 
-        public static void TryMoveLeft(Level level, (int x, int y) heroIndex, bool runExclusionCheck = true)
+        public static void TryMoveLeft(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = true)
         {
             var x = heroIndex.x;
             var y = heroIndex.y - 1;
@@ -146,7 +146,7 @@
                     copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
-                    if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount))
+                    if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
                         Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                 }
                 else
@@ -159,7 +159,7 @@
                         copyLevel[x, y - 1] = GridLayouts.EmptyTile;
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
-                        if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1), true))
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1), true))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                     }
                     else if (y - 1 >= 0 && level.Grid[x, y - 1] == GridLayouts.EmptyTile)
@@ -170,7 +170,7 @@
                         copyLevel[x, y - 1] = copyLevel[x, y];
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
-                        if (runExclusionCheck && !ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1)))
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1)))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
                     }
                 }

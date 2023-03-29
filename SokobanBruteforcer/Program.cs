@@ -46,8 +46,8 @@ public class Program
         int maxStepsLimitReached = 0;
         int attempts = 0;
         int duplicate = 0;
-        bool print = true;
-        bool manualMode = true;
+        bool print = false;
+        bool manualMode = false;
         int maxSteps = 120;
         var sw = Stopwatch.StartNew();       
 
