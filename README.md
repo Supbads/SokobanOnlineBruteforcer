@@ -1,4 +1,4 @@
 # SokobanOnlineBruteforcer
 
 A Bruteforcer for the classic puzzle game Sokoban 
-Have a got at https://www.sokobanonline.com/
+Feel free to have a go at it here: https://www.sokobanonline.com/
