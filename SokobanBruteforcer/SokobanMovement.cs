@@ -5,7 +5,7 @@
         public static int _xLength = SolutionVariables._xLength;
         public static int _yLength = SolutionVariables._yLength;
 
-        public static void TryMoveRight(Level level, bool skipExlusionChecks = true)
+        public static void TryMoveRight(Level level, bool skipExlusionChecks = false)
         {
             var heroIndex = level.HeroIndex;
             var x = heroIndex.x;
@@ -96,7 +96,7 @@
             }
         }
 
-        public static void TryMoveUp(Level level, bool skipExlusionChecks = true)
+        public static void TryMoveUp(Level level, bool skipExlusionChecks = false)
         {
             var heroIndex = level.HeroIndex;
             var x = heroIndex.x - 1;
@@ -142,7 +142,7 @@
             }
         }
 
-        public static void TryMoveLeft(Level level, bool skipExlusionChecks = true)
+        public static void TryMoveLeft(Level level, bool skipExlusionChecks = false)
         {
             var heroIndex = level.HeroIndex;
             var x = heroIndex.x;
@@ -193,6 +193,11 @@
 
         public static bool ExcludeSolution(byte[,] level, short stepsCount, (int x, int y)? boxIndices = null, bool skipWallChecks = false)
         {
+            if(!SolutionVariables.useStringSnapshotting)
+            {
+                return ExcludeSolutionByteArrayImpl(level, stepsCount, boxIndices, skipWallChecks);
+            }
+
             var snapshot = Level.GenerateSnapshot(level);
             if (!boxIndices.HasValue)
             {
@@ -215,6 +220,10 @@
                         return false;
                     }
                 }
+                else
+                {
+                    SolutionVariables._pendingLevelsSnapshots.Add(snapshot, stepsCount);
+                }
 
                 return false;
             }
@@ -230,8 +239,9 @@
                     excludedSolutions++;
                     return true;
                 }
-                if (SolutionVariables._pendingLevelsSnapshots.ContainsKey(snapshot) && (SolutionVariables._pendingLevelsSnapshots[snapshot] < stepsCount))
+                if (SolutionVariables._pendingLevelsSnapshots.ContainsKey(snapshot))
                 {
+
                     if (SolutionVariables._pendingLevelsSnapshots[snapshot] < stepsCount)
                     {
                         excludedSolutions++;
@@ -243,12 +253,16 @@
                         return false;
                     }
                 }
+                else
+                {
+                    SolutionVariables._pendingLevelsSnapshots.Add(snapshot, stepsCount);
+                }
 
                 return false;
             }
         }
 
-        public static bool ExcludeSolutionByteArrayImpl(byte[,] level, short stepsCount, (int x, int y)? boxIndices = null, bool skipWallCheecks = false)
+        public static bool ExcludeSolutionByteArrayImpl(byte[,] level, short stepsCount, (int x, int y)? boxIndices = null, bool skipWallChecks = false)
         {
             if (!boxIndices.HasValue)
             {
@@ -271,13 +285,17 @@
                         return false;
                     }
                 }
+                else
+                {
+                    SolutionVariables._pendingLevelsSnapshotsByte.Add(level, stepsCount);
+                }
 
                 return false;
             }
             else
             {
                 //check if all boxes are reachable from current solution
-                if (!skipWallCheecks && WallChecksInvalidateSolution(level, boxIndices.Value))
+                if (!skipWallChecks && WallChecksInvalidateSolution(level, boxIndices.Value))
                 {
                     return true;
                 }
@@ -286,7 +304,7 @@
                     excludedSolutions++;
                     return true;
                 }
-                if (SolutionVariables._pendingLevelsSnapshotsByte.ContainsKey(level) && (SolutionVariables._pendingLevelsSnapshotsByte[level] < stepsCount))
+                if (SolutionVariables._pendingLevelsSnapshotsByte.ContainsKey(level))
                 {
                     if (SolutionVariables._pendingLevelsSnapshotsByte[level] < stepsCount)
                     {
@@ -298,6 +316,10 @@
                         SolutionVariables._pendingLevelsSnapshotsByte[level] = stepsCount;
                         return false;
                     }
+                }
+                else
+                {
+                    SolutionVariables._pendingLevelsSnapshotsByte.Add(level, stepsCount);
                 }
 
                 return false;
@@ -323,24 +345,12 @@
 
             //todo all remaining boxes have a reachable path
 
-            //lvl hack
-            //if (GridLayouts.Levle57InvalidationImprovement(boxIndices))
-            //{
-            //    wallChecksFuncInvalidationsHack++;
-            //    return true;
-            //}
-
-            //lvl 2 hack
-            //if (boxIndices.x == 1 || boxIndices.x == 6 || boxIndices.y == 1 || boxIndices.y == 6)
-            //{
-            //    return true;
-            //}
-            //if (SokobanJuniorLayouts.Level15InvalidationImprovement(boxIndices))
-            //{
-            //    wallChecksFuncInvalidationsHack++;
-            //    return true;
-            //}
-
+            if (SolutionVariables._levelInvalidationImprovement(boxIndices))
+            {
+                wallChecksFuncInvalidationsHack++;
+                return true;
+            }
+            
             //check is box stuck in a corner
             bool topWall = level[boxIndices.x - 1, boxIndices.y] == GridLayouts.Wall;
             bool leftWall = level[boxIndices.x, boxIndices.y - 1] == GridLayouts.Wall;

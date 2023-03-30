@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 
 namespace SokobanBruteforcer
 {
@@ -11,6 +6,9 @@ namespace SokobanBruteforcer
     {
         public static bool SolveSokobanLevel(Level initialLevel)
         {
+            SolutionVariables._currentSolutions = Level._solutions;
+            SolutionVariables.useStringSnapshotting = false;
+
             foreach (var solution in Level._solutions)
             {
                 if (initialLevel.Grid[solution.Key.x, solution.Key.y] == 0)
@@ -53,7 +51,6 @@ namespace SokobanBruteforcer
                     bool incrementSteps = SolveManualMode(level);
                     if (incrementSteps)
                         attempts++;
-
                 }
             }
             else
@@ -96,29 +93,63 @@ namespace SokobanBruteforcer
                     }
 
                     //PrintLevel(level._level);
-                    var snp = level.GenerateSnapshot();
-                    if (SolutionVariables._visitedLevelsSnapshots.ContainsKey(snp) && SolutionVariables._visitedLevelsSnapshots[snp] < level.StepsCount)
+
+                    #region legacySnapshotting
+                    if (SolutionVariables.useStringSnapshotting)
                     {
-                        duplicate += 1;
-                        if (duplicate % 50000 == 0)
+                        var snp = level.GenerateSnapshot();
+                        if (SolutionVariables._visitedLevelsSnapshots.ContainsKey(snp) && SolutionVariables._visitedLevelsSnapshots[snp] < level.StepsCount)
                         {
-                            Console.WriteLine($"Duplicate {duplicate}");
-                        }
-                        continue;
-                    }
-                    else
-                    {
-                        if (SolutionVariables._visitedLevelsSnapshots.ContainsKey(snp))
-                        {
-                            SolutionVariables._visitedLevelsSnapshots[snp] = level.StepsCount;
+                            duplicate += 1;
+                            if (duplicate % 50000 == 0)
+                            {
+                                Console.WriteLine($"Duplicate {duplicate}");
+                            }
+                            continue;
                         }
                         else
                         {
-                            SolutionVariables._visitedLevelsSnapshots.Add(snp, level.StepsCount);
+                            if (SolutionVariables._visitedLevelsSnapshots.ContainsKey(snp))
+                            {
+                                SolutionVariables._visitedLevelsSnapshots[snp] = level.StepsCount;
+                            }
+                            else
+                            {
+                                SolutionVariables._visitedLevelsSnapshots.Add(snp, level.StepsCount);
+                            }
+
+                            SolutionVariables._pendingLevelsSnapshots.Remove(snp);
                         }
 
-                        SolutionVariables._pendingLevelsSnapshots.Remove(snp);
                     }
+                    #endregion
+                    #region byteArraySnapshotting
+                    else
+                    {
+                        if (SolutionVariables._visitedLevelsSnapshotsByte.ContainsKey(level.Grid) && SolutionVariables._visitedLevelsSnapshotsByte[level.Grid] < level.StepsCount)
+                        {
+                            duplicate += 1;
+                            if (duplicate % 50000 == 0)
+                            {
+                                Console.WriteLine($"Duplicate {duplicate}");
+                            }
+                            continue;
+                        }
+                        else
+                        {
+                            if (SolutionVariables._visitedLevelsSnapshotsByte.ContainsKey(level.Grid))
+                            {
+                                SolutionVariables._visitedLevelsSnapshotsByte[level.Grid] = level.StepsCount;
+                            }
+                            else
+                            {
+                                SolutionVariables._visitedLevelsSnapshotsByte.Add(level.Grid, level.StepsCount);
+                            }
+
+                            SolutionVariables._pendingLevelsSnapshotsByte.Remove(level.Grid);
+                        }
+                    }
+                    #endregion
 
                     attempts += 1;
                     if (attempts % 100000 == 0)
@@ -137,24 +168,26 @@ namespace SokobanBruteforcer
 
             sw.Stop();
             Console.WriteLine($"Algorithm ended in {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).ToString("mm\\:ss\\:FF")}");
-
+            
             if (SolutionVariables._bestLevel != null)
             {
                 SolutionVariables._bestLevel.PrintSolutionsChain();
 
                 SolutionVariables._bestLevel.PrintHeroSteps();
-                Console.WriteLine($"Attempts: {attempts}, maxStepsLimits: {maxStepsLimitReached}, duplicate: {duplicate}"); //remove duplicates potentially ?
-                return true;
+                Console.WriteLine($"Algorithm ended in {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).ToString("mm\\:ss\\:FF")}");
             }
             else
             {
+                Console.WriteLine($"Algorithm ended in {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).ToString("mm\\:ss\\:FF")}");
                 Console.WriteLine("No solution found");
-                Console.WriteLine($"Attempts: {attempts}, maxStepsLimits: {maxStepsLimitReached}, duplicate: {duplicate}"); //remove duplicates potentially ?
-                Console.WriteLine($"WallChecksExcludes: {SokobanMovement.wallChecksFuncInvalidations}, excludedSolutions: {SokobanMovement.excludedSolutions}");
-                Console.WriteLine($"WallChecksExcludesHacks: {SokobanMovement.wallChecksFuncInvalidationsHack}, excludedSolutionsQuadro: {SokobanMovement.wallChecksFuncInvalidationsQuadro}");
             }
 
-            return false;
+            Console.WriteLine($"Attempts: {attempts}, maxStepsLimits: {maxStepsLimitReached}, duplicate: {duplicate}"); //remove duplicates potentially ?
+            Console.WriteLine($"WallChecksExcludes: {SokobanMovement.wallChecksFuncInvalidations}, excludedSolutions: {SokobanMovement.excludedSolutions}");
+            Console.WriteLine($"WallChecksExcludesHacks: {SokobanMovement.wallChecksFuncInvalidationsHack}, excludedSolutionsQuadro: {SokobanMovement.wallChecksFuncInvalidationsQuadro}");
+            Console.WriteLine($"EqualsChecks: {ByteArrayComparer.EqualsChecks}, Hashes: {ByteArrayComparer.HashCodes}");
+
+            return SolutionVariables._bestLevel != null;
         }
 
 
@@ -167,19 +200,19 @@ namespace SokobanBruteforcer
 
             if (key == ConsoleKey.LeftArrow)
             {
-                SokobanMovement.TryMoveLeft(level, false);
+                SokobanMovement.TryMoveLeft(level, true);
             }
             else if (key == ConsoleKey.UpArrow)
             {
-                SokobanMovement.TryMoveUp(level, false);
+                SokobanMovement.TryMoveUp(level, true);
             }
             else if (key == ConsoleKey.DownArrow)
             {
-                SokobanMovement.TryMoveDown(level, false);
+                SokobanMovement.TryMoveDown(level, true);
             }
             else if (key == ConsoleKey.RightArrow)
             {
-                SokobanMovement.TryMoveRight(level, false);
+                SokobanMovement.TryMoveRight(level, true);
             }
 
             if (!SolutionVariables._levelsToBruteforce.Any())

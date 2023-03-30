@@ -85,8 +85,9 @@ namespace SokobanBruteforcer
 
         public string GenerateSnapshot()
         {
-            return GenerateSnapshotV3(Grid);
-            //return GenerateSnapshot(Grid);
+            //return GenerateSnapshotV3(Grid);
+            var snp = GenerateSnapshot(Grid);
+            return snp;
         }
 
         public static string GenerateSnapshotV2(byte[,] grid)

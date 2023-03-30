@@ -16,6 +16,11 @@
         public static Dictionary<(int x, int y), byte> _currentSolutions;
         public static bool foundSolution = false;
 
+
+        //improvements
+        public static bool useStringSnapshotting = false;
+        public static Predicate<(int x, int y)> _levelInvalidationImprovement = (_) => false;
+
         //testing
         public static byte highestSolvedItemsCount = 0;
         public static string solvedItemsSnapshot = "";

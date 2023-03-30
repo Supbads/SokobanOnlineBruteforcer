@@ -3,15 +3,14 @@ using System.Text;
 
 namespace SokobanBruteforcer
 {
-    public class ByteArrayComparer : IComparable<byte[,]>, IEqualityComparer<byte[,]>
+    public class ByteArrayComparer : IEqualityComparer<byte[,]>
     {
-        public int CompareTo(byte[,]? other)
-        {
-            throw new NotImplementedException();
-        }
+        public static int EqualsChecks = 0;
+        public static int HashCodes = 0;
 
         public bool Equals(byte[,]? x, byte[,]? y)
         {
+            EqualsChecks++;
             for (int i = 0; i < SolutionVariables._xLength; i++)
             {
                 for (int j = 0; j < SolutionVariables._yLength; j++)
@@ -28,6 +27,7 @@ namespace SokobanBruteforcer
 
         public int GetHashCode([DisallowNull] byte[,] obj)
         {
+            HashCodes++;
             StringBuilder sb = new StringBuilder(SolutionVariables._xLength * SolutionVariables._yLength);
             for (int i = 0; i < SolutionVariables._xLength; i++)
             {
