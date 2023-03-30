@@ -5,8 +5,9 @@
         public static int _xLength = Program._xLength;
         public static int _yLength = Program._yLength;
 
-        public static void TryMoveRight(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = true)
+        public static void TryMoveRight(Level level, bool skipExlusionChecks = true)
         {
+            var heroIndex = level.HeroIndex;
             var x = heroIndex.x;
             var y = heroIndex.y + 1;
             if (y < _yLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -18,7 +19,7 @@
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
                     if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
-                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Right));
                 }
                 else
                 {
@@ -31,7 +32,7 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1), true))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Right));
                     }
                     else if (y + 1 < _yLength && level.Grid[x, y + 1] == GridLayouts.EmptyTile)
                     {
@@ -41,14 +42,15 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1)))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Right));
                     }
                 }
             }
         }
 
-        public static void TryMoveDown(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = false)
+        public static void TryMoveDown(Level level, bool skipExlusionChecks = false)
         {
+            var heroIndex = level.HeroIndex;
             var x = heroIndex.x + 1;
             var y = heroIndex.y;
             if (x < _xLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -61,7 +63,7 @@
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
                     if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
-                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Down));
                 }
                 else
                 {
@@ -74,7 +76,7 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y), true))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Down));
                     }
                     else if (x + 1 < _xLength && level.Grid[x + 1, y] == GridLayouts.EmptyTile)
                     {
@@ -84,14 +86,15 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y)))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Down));
                     }
                 }
             }
         }
 
-        public static void TryMoveUp(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = true)
+        public static void TryMoveUp(Level level, bool skipExlusionChecks = true)
         {
+            var heroIndex = level.HeroIndex;
             var x = heroIndex.x - 1;
             var y = heroIndex.y;
             if (x >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -103,7 +106,7 @@
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
                     if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
-                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Up));
                 }
                 else
                 {
@@ -116,7 +119,7 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x - x, y), true))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Up));
                     }
                     else if (x - 1 >= 0 && level.Grid[x - 1, y] == GridLayouts.EmptyTile)
                     {
@@ -128,14 +131,15 @@
 
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x - 1, y)))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Up));
                     }
                 }
             }
         }
 
-        public static void TryMoveLeft(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = true)
+        public static void TryMoveLeft(Level level, bool skipExlusionChecks = true)
         {
+            var heroIndex = level.HeroIndex;
             var x = heroIndex.x;
             var y = heroIndex.y - 1;
             if (y >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -147,7 +151,7 @@
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
                     if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
-                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Left));
                 }
                 else
                 {
@@ -160,7 +164,7 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1), true))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Left));
                     }
                     else if (y - 1 >= 0 && level.Grid[x, y - 1] == GridLayouts.EmptyTile)
                     {
@@ -171,7 +175,7 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1)))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
+                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Left));
                     }
                 }
             }
@@ -229,6 +233,62 @@
                     else
                     {
                         Program._pendingLevelsSnapshots[snapshot] = stepsCount;
+                        return false;
+                    }
+                }
+
+                return false;
+            }
+        }
+
+        public static bool ExcludeSolutionByteArrayImpl(byte[,] level, short stepsCount, (int x, int y)? boxIndices = null, bool skipWallCheecks = false)
+        {
+            if (!boxIndices.HasValue)
+            {
+                if (Program._visitedLevelsSnapshotsByte.ContainsKey(level) && Program._visitedLevelsSnapshotsByte[level] < stepsCount)
+                {
+                    excludedSolutions++;
+                    return true;
+                }
+
+                if (Program._pendingLevelsSnapshotsByte.ContainsKey(level))
+                {
+                    if (Program._pendingLevelsSnapshotsByte[level] < stepsCount)
+                    {
+                        excludedSolutions++;
+                        return true;
+                    }
+                    else
+                    {
+                        Program._pendingLevelsSnapshotsByte[level] = stepsCount;
+                        return false;
+                    }
+                }
+
+                return false;
+            }
+            else
+            {
+                //check if all boxes are reachable from current solution
+                if (!skipWallCheecks && WallChecksInvalidateSolution(level, boxIndices.Value))
+                {
+                    return true;
+                }
+                if (Program._visitedLevelsSnapshotsByte.ContainsKey(level) && Program._visitedLevelsSnapshotsByte[level] < stepsCount)
+                {
+                    excludedSolutions++;
+                    return true;
+                }
+                if (Program._pendingLevelsSnapshotsByte.ContainsKey(level) && (Program._pendingLevelsSnapshotsByte[level] < stepsCount))
+                {
+                    if (Program._pendingLevelsSnapshotsByte[level] < stepsCount)
+                    {
+                        excludedSolutions++;
+                        return true;
+                    }
+                    else
+                    {
+                        Program._pendingLevelsSnapshotsByte[level] = stepsCount;
                         return false;
                     }
                 }

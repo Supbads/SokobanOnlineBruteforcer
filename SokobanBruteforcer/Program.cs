@@ -1,5 +1,7 @@
 ﻿using SokobanBruteforcer;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 public class Program
 {
@@ -8,6 +10,10 @@ public class Program
     public static Queue<Level> _levelsToBruteforce; //todo test queue vs stack
     private static int _bestSteps = int.MaxValue;
     private static Level _bestLevel;
+
+    public static Dictionary<byte[,], short> _visitedLevelsSnapshotsByte;
+    public static Dictionary<byte[,], short> _pendingLevelsSnapshotsByte;
+
     public static Dictionary<string, short> _visitedLevelsSnapshots;
     public static Dictionary<string, short> _pendingLevelsSnapshots;
     public static Dictionary<(int x, int y), byte> _currentSolutions;
@@ -17,6 +23,7 @@ public class Program
     private static byte highestSolvedItemsCount = 0;
     private static string solvedItemsSnapshot = "";
 
+    
     public static void Main()
     {
         //_currentSolutions = SokobanJuniorLayouts.SokobanJunior15Solutions;
@@ -42,6 +49,8 @@ public class Program
         //add next potential steps to a queue or stack
         _visitedLevelsSnapshots = new Dictionary<string, short>(3000);
         _pendingLevelsSnapshots = new Dictionary<string, short>(3000);
+        _visitedLevelsSnapshotsByte = new Dictionary<byte[,], short>(3000, new ByteArrayComparer());
+        _pendingLevelsSnapshotsByte = new Dictionary<byte[,], short>(3000, new ByteArrayComparer());
 
         int maxStepsLimitReached = 0;
         int attempts = 0;
@@ -170,26 +179,25 @@ public class Program
     static bool SolveManualMode(Level level)
     {
         PrintLevel(level.Grid);
-        var heroIndex = level.HeroIndex;
         Console.Write("Input Key: ");
         var key = Console.ReadKey().Key;
         Console.WriteLine($"{key.ToString()}");
 
         if (key == ConsoleKey.LeftArrow)
         {
-            SokobanMovement.TryMoveLeft(level, heroIndex, false);
+            SokobanMovement.TryMoveLeft(level, false);
         }
         else if (key == ConsoleKey.UpArrow)
         {
-            SokobanMovement.TryMoveUp(level, heroIndex, false);
+            SokobanMovement.TryMoveUp(level, false);
         }
         else if (key == ConsoleKey.DownArrow)
         {
-            SokobanMovement.TryMoveDown(level, heroIndex, false);
+            SokobanMovement.TryMoveDown(level, false);
         }
         else if (key == ConsoleKey.RightArrow)
         {
-            SokobanMovement.TryMoveRight(level, heroIndex, false);
+            SokobanMovement.TryMoveRight(level, false);
         }
 
         if (!_levelsToBruteforce.Any())
@@ -204,11 +212,46 @@ public class Program
     
     static void Solve(Level level)
     {
-        var heroIndex = level.HeroIndex;
+        if (level.Pushed)
+        {
+            SokobanMovement.TryMoveLeft(level);
+            SokobanMovement.TryMoveUp(level);
+            SokobanMovement.TryMoveRight(level);
+            SokobanMovement.TryMoveDown(level);
+
+        }
+        else
+        {
+            switch (level.IncomingDirection)
+            {
+                case Direction.Up:
+                    SokobanMovement.TryMoveLeft(level);
+                    SokobanMovement.TryMoveUp(level);
+                    SokobanMovement.TryMoveRight(level);
+                    break;
+                case Direction.Left:
+                    SokobanMovement.TryMoveLeft(level);
+                    SokobanMovement.TryMoveUp(level);
+                    SokobanMovement.TryMoveDown(level);
+                    break;
+                case Direction.Right:
+                    SokobanMovement.TryMoveUp(level);
+                    SokobanMovement.TryMoveRight(level);
+                    SokobanMovement.TryMoveDown(level);
+                    break;
+                case Direction.Down:
+                    SokobanMovement.TryMoveLeft(level);
+                    SokobanMovement.TryMoveRight(level);
+                    SokobanMovement.TryMoveDown(level);
+                    break;
+                default:
+                    throw new Exception("Shouldn't be hit");
+            }
+        }
+
+        //var heroIndex = level.HeroIndex;
 
         //try left
-        SokobanMovement.TryMoveLeft(level, heroIndex);
-
         //var x = heroIndex.x;
         //var y = heroIndex.y - 1;
         //if (y >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -250,7 +293,6 @@ public class Program
         //}
 
         //try up
-        SokobanMovement.TryMoveUp(level, heroIndex);
         //x = heroIndex.x - 1;
         //y = heroIndex.y;
         //if (x >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -293,7 +335,6 @@ public class Program
         //}
 
         //try right
-        SokobanMovement.TryMoveRight(level, heroIndex);
         //x = heroIndex.x;
         //y = heroIndex.y + 1;
         //if (y < _yLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -334,7 +375,6 @@ public class Program
         //}
 
         // try down
-        SokobanMovement.TryMoveDown(level, heroIndex);
         //x = heroIndex.x + 1;
         //y = heroIndex.y;
         //if (x < _xLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)

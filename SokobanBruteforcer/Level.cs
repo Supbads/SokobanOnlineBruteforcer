@@ -37,7 +37,8 @@ namespace SokobanBruteforcer
             HeroIndex = heroIndex;
             PreviousLevel = previousLevel;
             IsSolved = IsLevelSolved(Grid);
-
+            Pushed = pushed;
+            IncomingDirection = incomingDirection;
             //todo optimize add if we did not push and the direction is X, don't solve the opposite direction as it has been visited
             
         }
@@ -47,6 +48,8 @@ namespace SokobanBruteforcer
         public ILevel PreviousLevel { get; set; }
         public short StepsCount { get; set; }
         public (int x, int y) HeroIndex { get; set; }
+        public bool Pushed { get; }
+        public Direction IncomingDirection { get; }
 
         public (int, int) FindHeroIndex()
         {
