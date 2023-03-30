@@ -6,6 +6,7 @@ namespace SokobanBruteforcer
     {
         public static Dictionary<(int, int), byte> _solutions;
         
+        //Initial level constructor
         public Level(byte[,] grid, ILevel previousLevel, short stepsCount)
         {
             Grid = grid;
@@ -13,6 +14,8 @@ namespace SokobanBruteforcer
             StepsCount = stepsCount;
             HeroIndex = FindHeroIndex();
             IsSolved = IsLevelSolved(Grid);
+            Pushed = false;
+            IncomingDirection = Direction.None;
         }
 
         public Level(byte[,] level, (int, int) heroIndex, ILevel previousLevel)

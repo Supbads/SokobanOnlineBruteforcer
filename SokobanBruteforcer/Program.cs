@@ -31,7 +31,7 @@ public class Program
         //var initialLevel = new Level(SokobanJuniorLayouts.SokobanJunior15, null, 0);
         _currentSolutions = EmptyHolesTest. LevelHolyHow4Solutions;
         Level._solutions = _currentSolutions;
-        var initialLevel = new Level(EmptyHolesTest.LevelHolyHow4, null, 0);
+        var initialLevel = new Level(EmptyHolesTest.LevelHolyHow4, null, 0); // push true hack to try every direction
         foreach (var solution in _currentSolutions)
         {
             if(initialLevel.Grid[solution.Key.x, solution.Key.y] == 0)
@@ -241,6 +241,12 @@ public class Program
                     break;
                 case Direction.Down:
                     SokobanMovement.TryMoveLeft(level);
+                    SokobanMovement.TryMoveRight(level);
+                    SokobanMovement.TryMoveDown(level);
+                    break;
+                case Direction.None:
+                    SokobanMovement.TryMoveLeft(level);
+                    SokobanMovement.TryMoveUp(level);
                     SokobanMovement.TryMoveRight(level);
                     SokobanMovement.TryMoveDown(level);
                     break;

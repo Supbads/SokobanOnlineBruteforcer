@@ -41,7 +41,9 @@
                         copyLevel[x, y + 1] = copyLevel[x, y];
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
-                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1)))
+                        bool skipWallChecks = copyLevel[x, y - 1] == GridLayouts.HoleBlock;
+
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1), skipWallChecks))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Right));
                     }
                 }
@@ -85,7 +87,9 @@
                         copyLevel[x + 1, y] = copyLevel[x, y];
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
-                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y)))
+                        bool skipWallChecks = copyLevel[x, y - 1] == GridLayouts.HoleBlock;
+
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y), skipWallChecks))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Down));
                     }
                 }
@@ -129,8 +133,9 @@
                         copyLevel[x - 1, y] = copyLevel[x, y];
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
+                        bool skipWallChecks = copyLevel[x, y - 1] == GridLayouts.HoleBlock;
 
-                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x - 1, y)))
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x - 1, y), skipWallChecks))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Up));
                     }
                 }
@@ -174,7 +179,9 @@
                         copyLevel[x, y - 1] = copyLevel[x, y];
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
-                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1)))
+                        bool skipWallChecks = copyLevel[x, y - 1 ] == GridLayouts.HoleBlock;
+
+                        if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1), skipWallChecks))
                             Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Left));
                     }
                 }
@@ -184,7 +191,7 @@
 
         public static int excludedSolutions = 0;
 
-        public static bool ExcludeSolution(byte[,] level, short stepsCount, (int x, int y)? boxIndices = null, bool skipWallCheecks = false)
+        public static bool ExcludeSolution(byte[,] level, short stepsCount, (int x, int y)? boxIndices = null, bool skipWallChecks = false)
         {
             var snapshot = Level.GenerateSnapshot(level);
             if (!boxIndices.HasValue)
@@ -214,7 +221,7 @@
             else
             {
                 //check if all boxes are reachable from current solution
-                if (!skipWallCheecks && WallChecksInvalidateSolution(level, boxIndices.Value))
+                if (!skipWallChecks && WallChecksInvalidateSolution(level, boxIndices.Value))
                 {
                     return true;
                 }
