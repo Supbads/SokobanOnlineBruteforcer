@@ -12,9 +12,9 @@ namespace SokobanBruteforcer
 
         public bool Equals(byte[,]? x, byte[,]? y)
         {
-            for (int i = 0; i < Program._xLength; i++)
+            for (int i = 0; i < SolutionVariables._xLength; i++)
             {
-                for (int j = 0; j < Program._yLength; j++)
+                for (int j = 0; j < SolutionVariables._yLength; j++)
                 {
                     if (x[i, j] != y[i, j])
                     {
@@ -28,10 +28,10 @@ namespace SokobanBruteforcer
 
         public int GetHashCode([DisallowNull] byte[,] obj)
         {
-            StringBuilder sb = new StringBuilder(Program._xLength * Program._yLength);
-            for (int i = 0; i < Program._xLength; i++)
+            StringBuilder sb = new StringBuilder(SolutionVariables._xLength * SolutionVariables._yLength);
+            for (int i = 0; i < SolutionVariables._xLength; i++)
             {
-                for (int j = 0; j < Program._yLength; j++)
+                for (int j = 0; j < SolutionVariables._yLength; j++)
                 {
                     sb.Append(obj[i, j].ToString());
                 }

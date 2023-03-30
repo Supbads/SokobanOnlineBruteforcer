@@ -2,8 +2,8 @@
 {
     public static class SokobanMovement
     {
-        public static int _xLength = Program._xLength;
-        public static int _yLength = Program._yLength;
+        public static int _xLength = SolutionVariables._xLength;
+        public static int _yLength = SolutionVariables._yLength;
 
         public static void TryMoveRight(Level level, bool skipExlusionChecks = true)
         {
@@ -19,7 +19,7 @@
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
                     if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
-                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Right));
+                        SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Right));
                 }
                 else
                 {
@@ -32,7 +32,7 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1), true))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Right));
+                            SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Right));
                     }
                     else if (y + 1 < _yLength && level.Grid[x, y + 1] == GridLayouts.EmptyTile)
                     {
@@ -44,7 +44,7 @@
                         bool skipWallChecks = copyLevel[x, y - 1] == GridLayouts.HoleBlock;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1), skipWallChecks))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Right));
+                            SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Right));
                     }
                 }
             }
@@ -65,7 +65,7 @@
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
                     if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
-                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Down));
+                        SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Down));
                 }
                 else
                 {
@@ -78,7 +78,7 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y), true))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Down));
+                            SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Down));
                     }
                     else if (x + 1 < _xLength && level.Grid[x + 1, y] == GridLayouts.EmptyTile)
                     {
@@ -90,7 +90,7 @@
                         bool skipWallChecks = copyLevel[x, y - 1] == GridLayouts.HoleBlock;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y), skipWallChecks))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Down));
+                            SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Down));
                     }
                 }
             }
@@ -110,7 +110,7 @@
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
                     if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
-                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Up));
+                        SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Up));
                 }
                 else
                 {
@@ -123,7 +123,7 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x - x, y), true))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Up));
+                            SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Up));
                     }
                     else if (x - 1 >= 0 && level.Grid[x - 1, y] == GridLayouts.EmptyTile)
                     {
@@ -136,7 +136,7 @@
                         bool skipWallChecks = copyLevel[x, y - 1] == GridLayouts.HoleBlock;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x - 1, y), skipWallChecks))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Up));
+                            SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Up));
                     }
                 }
             }
@@ -156,7 +156,7 @@
                     copyLevel[x, y] = GridLayouts.HeroTile;
 
                     if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount))
-                        Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Left));
+                        SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, false, Direction.Left));
                 }
                 else
                 {
@@ -169,7 +169,7 @@
                         copyLevel[x, y] = GridLayouts.HeroTile;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1), true))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Left));
+                            SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Left));
                     }
                     else if (y - 1 >= 0 && level.Grid[x, y - 1] == GridLayouts.EmptyTile)
                     {
@@ -182,7 +182,7 @@
                         bool skipWallChecks = copyLevel[x, y - 1 ] == GridLayouts.HoleBlock;
 
                         if (skipExlusionChecks || !ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1), skipWallChecks))
-                            Program._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Left));
+                            SolutionVariables._levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level, true, Direction.Left));
                     }
                 }
             }
@@ -196,22 +196,22 @@
             var snapshot = Level.GenerateSnapshot(level);
             if (!boxIndices.HasValue)
             {
-                if (Program._visitedLevelsSnapshots.ContainsKey(snapshot) && Program._visitedLevelsSnapshots[snapshot] < stepsCount)
+                if (SolutionVariables._visitedLevelsSnapshots.ContainsKey(snapshot) && SolutionVariables._visitedLevelsSnapshots[snapshot] < stepsCount)
                 {
                     excludedSolutions++;
                     return true;
                 }
 
-                if (Program._pendingLevelsSnapshots.ContainsKey(snapshot))
+                if (SolutionVariables._pendingLevelsSnapshots.ContainsKey(snapshot))
                 {
-                    if (Program._pendingLevelsSnapshots[snapshot] < stepsCount)
+                    if (SolutionVariables._pendingLevelsSnapshots[snapshot] < stepsCount)
                     {
                         excludedSolutions++;
                         return true;
                     }
                     else
                     {
-                        Program._pendingLevelsSnapshots[snapshot] = stepsCount;
+                        SolutionVariables._pendingLevelsSnapshots[snapshot] = stepsCount;
                         return false;
                     }
                 }
@@ -225,21 +225,21 @@
                 {
                     return true;
                 }
-                if (Program._visitedLevelsSnapshots.ContainsKey(snapshot) && Program._visitedLevelsSnapshots[snapshot] < stepsCount)
+                if (SolutionVariables._visitedLevelsSnapshots.ContainsKey(snapshot) && SolutionVariables._visitedLevelsSnapshots[snapshot] < stepsCount)
                 {
                     excludedSolutions++;
                     return true;
                 }
-                if (Program._pendingLevelsSnapshots.ContainsKey(snapshot) && (Program._pendingLevelsSnapshots[snapshot] < stepsCount))
+                if (SolutionVariables._pendingLevelsSnapshots.ContainsKey(snapshot) && (SolutionVariables._pendingLevelsSnapshots[snapshot] < stepsCount))
                 {
-                    if (Program._pendingLevelsSnapshots[snapshot] < stepsCount)
+                    if (SolutionVariables._pendingLevelsSnapshots[snapshot] < stepsCount)
                     {
                         excludedSolutions++;
                         return true;
                     }
                     else
                     {
-                        Program._pendingLevelsSnapshots[snapshot] = stepsCount;
+                        SolutionVariables._pendingLevelsSnapshots[snapshot] = stepsCount;
                         return false;
                     }
                 }
@@ -252,22 +252,22 @@
         {
             if (!boxIndices.HasValue)
             {
-                if (Program._visitedLevelsSnapshotsByte.ContainsKey(level) && Program._visitedLevelsSnapshotsByte[level] < stepsCount)
+                if (SolutionVariables._visitedLevelsSnapshotsByte.ContainsKey(level) && SolutionVariables._visitedLevelsSnapshotsByte[level] < stepsCount)
                 {
                     excludedSolutions++;
                     return true;
                 }
 
-                if (Program._pendingLevelsSnapshotsByte.ContainsKey(level))
+                if (SolutionVariables._pendingLevelsSnapshotsByte.ContainsKey(level))
                 {
-                    if (Program._pendingLevelsSnapshotsByte[level] < stepsCount)
+                    if (SolutionVariables._pendingLevelsSnapshotsByte[level] < stepsCount)
                     {
                         excludedSolutions++;
                         return true;
                     }
                     else
                     {
-                        Program._pendingLevelsSnapshotsByte[level] = stepsCount;
+                        SolutionVariables._pendingLevelsSnapshotsByte[level] = stepsCount;
                         return false;
                     }
                 }
@@ -281,21 +281,21 @@
                 {
                     return true;
                 }
-                if (Program._visitedLevelsSnapshotsByte.ContainsKey(level) && Program._visitedLevelsSnapshotsByte[level] < stepsCount)
+                if (SolutionVariables._visitedLevelsSnapshotsByte.ContainsKey(level) && SolutionVariables._visitedLevelsSnapshotsByte[level] < stepsCount)
                 {
                     excludedSolutions++;
                     return true;
                 }
-                if (Program._pendingLevelsSnapshotsByte.ContainsKey(level) && (Program._pendingLevelsSnapshotsByte[level] < stepsCount))
+                if (SolutionVariables._pendingLevelsSnapshotsByte.ContainsKey(level) && (SolutionVariables._pendingLevelsSnapshotsByte[level] < stepsCount))
                 {
-                    if (Program._pendingLevelsSnapshotsByte[level] < stepsCount)
+                    if (SolutionVariables._pendingLevelsSnapshotsByte[level] < stepsCount)
                     {
                         excludedSolutions++;
                         return true;
                     }
                     else
                     {
-                        Program._pendingLevelsSnapshotsByte[level] = stepsCount;
+                        SolutionVariables._pendingLevelsSnapshotsByte[level] = stepsCount;
                         return false;
                     }
                 }
@@ -310,7 +310,7 @@
 
         public static bool WallChecksInvalidateSolution(byte[,] level, (int x, int y) boxIndices)
         {
-            var isBoxSolved = Program._currentSolutions.ContainsKey((boxIndices.x, boxIndices.y)) && (Program._currentSolutions[(boxIndices.x, boxIndices.y)] == level[boxIndices.x, boxIndices.y]);
+            var isBoxSolved = SolutionVariables._currentSolutions.ContainsKey((boxIndices.x, boxIndices.y)) && (SolutionVariables._currentSolutions[(boxIndices.x, boxIndices.y)] == level[boxIndices.x, boxIndices.y]);
             if (isBoxSolved)
             {
                 return false;

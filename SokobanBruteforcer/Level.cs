@@ -4,7 +4,7 @@ namespace SokobanBruteforcer
 {
     public class Level : ILevel
     {
-        public static Dictionary<(int, int), byte> _solutions;
+        public static Dictionary<(int x, int y), byte> _solutions;
         
         //Initial level constructor
         public Level(byte[,] grid, ILevel previousLevel, short stepsCount)
