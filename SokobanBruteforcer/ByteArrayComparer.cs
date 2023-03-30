@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace SokobanBruteforcer
@@ -7,6 +8,14 @@ namespace SokobanBruteforcer
     {
         public static int EqualsChecks = 0;
         public static int HashCodes = 0;
+
+        public ByteArrayComparer()
+        {
+            this.HashProvider = new SHA1CryptoServiceProvider();
+
+        }
+
+        public SHA1CryptoServiceProvider HashProvider { get; }
 
         public bool Equals(byte[,]? x, byte[,]? y)
         {

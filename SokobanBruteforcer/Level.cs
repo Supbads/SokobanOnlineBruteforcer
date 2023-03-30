@@ -1,11 +1,13 @@
 ﻿using System.Text;
+using System.Security.Cryptography;
 
 namespace SokobanBruteforcer
 {
     public class Level : ILevel
     {
         public static Dictionary<(int x, int y), byte> _solutions;
-        
+        public static SHA1 sha1  = new SHA1CryptoServiceProvider();
+
         //Initial level constructor
         public Level(byte[,] grid, ILevel previousLevel, short stepsCount)
         {
@@ -147,19 +149,19 @@ namespace SokobanBruteforcer
             return ((byte)solvedItems.Count, solvedItems);
         }
 
-        public static string GenerateSnapshot(byte[,] lvl)
+        public static string GenerateSnapshotOld(byte[,] grid)
         {
             var lookForObjects = _solutions.Values.ToHashSet();
             lookForObjects.Add(GridLayouts.HeroTile);
             List<(byte obj, int x, int y)> saughtObjectsCoordinates = new List<(byte, int, int)>(_solutions.Keys.Count);
 
-            for (int i = 0; i < lvl.GetLength(0); i++)
+            for (int i = 0; i < grid.GetLength(0); i++)
             {
-                for (int j = 0; j < lvl.GetLength(1); j++)
+                for (int j = 0; j < grid.GetLength(1); j++)
                 {
-                    if (lookForObjects.Contains(lvl[i, j]))
+                    if (lookForObjects.Contains(grid[i, j]))
                     {
-                        saughtObjectsCoordinates.Add((lvl[i, j], i, j));
+                        saughtObjectsCoordinates.Add((grid[i, j], i, j));
                     }
                 }
             }
@@ -170,6 +172,20 @@ namespace SokobanBruteforcer
                 .ToArray());
 
             return snapshot;
+        }
+
+        public static string GenerateSnapshot(byte[,] grid)
+        {
+            var buffer = new byte[SolutionVariables._xLength * SolutionVariables._yLength];
+            for (int i = 0; i < SolutionVariables._xLength; i++)
+            {
+                for (int j = 0; j < SolutionVariables._yLength; j++)
+                {
+                    buffer[SolutionVariables._xLength * i + j] = grid[i, j];
+                }
+            }
+
+            return string.Concat(sha1.ComputeHash(buffer).Select(x => x.ToString("X2")));
         }
 
         public static string GenerateSnapshotV3(byte[,] lvl)

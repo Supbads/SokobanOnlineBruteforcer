@@ -2,7 +2,8 @@
 {
     public class GridLayouts
     {
-        public static byte[,] Level58 = new byte[,]
+        //248, 252
+        public static byte[,] Level58 = new byte[,] // https://www.sokobanonline.com/play/community/mikearcher/5-boxes/131408_puzzle-58
         {
             { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //15, 8
             { 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0 },
@@ -22,7 +23,7 @@
             { (3,7), 6 },
             { (3,9), 7 },
         };
-        public static Predicate<(int x, int y)> Levle58InvalidationImprovement =>
+        public static Predicate<(int x, int y)> Level58InvalidationImprovement =>
             (boxIndices) => boxIndices.x == 1 || boxIndices.x == 6 || boxIndices.y == 1 || boxIndices.y == 13;
 
         public static byte[,] Level57 = new byte[,]
@@ -47,7 +48,7 @@
             { (4,2), 5 },
 
         };
-        public static Predicate<(int x, int y)> Levle57InvalidationImprovement =>
+        public static Predicate<(int x, int y)> Level57InvalidationImprovement =>
             (boxIndices) => boxIndices.x == 1 || boxIndices.x == 7 || boxIndices.y == 1 || boxIndices.y == 5;
 
         /* Step 195
@@ -78,7 +79,7 @@
             { 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0 },
             { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
         };
-        public static Predicate<(int x, int y)> Levle59InvalidationImprovement =>
+        public static Predicate<(int x, int y)> Level59InvalidationImprovement =>
             (boxIndices) => boxIndices.x == 1
             || boxIndices.x == 6
             || boxIndices.y == 1
@@ -94,7 +95,7 @@
             { (3,7), 7 }, //blue
         };
 
-        public static byte[,] Level2 = new byte[,]
+        public static byte[,] Level19 = new byte[,] //https://www.sokobanonline.com/play/community/mikearcher/5-boxes/128187_puzzle-19
         {
             { 0, 0, 0, 0, 0, 0, 0, 0,  }, //8, 8
             { 0, 2, 1, 1, 1, 1, 0, 0,  },
@@ -106,14 +107,17 @@
             { 0, 0, 0, 0, 0, 0, 0, 0,  },
         };
 
-        public static Dictionary<(int, int), byte> Level2SolutionIndices = new Dictionary<(int, int), byte>
+        public static Predicate<(int x, int y)> Level19InvalidationImprovement =>
+            (boxIndices) => boxIndices.x == 1 || boxIndices.x == 6 || boxIndices.y == 1 || boxIndices.y == 6;
+
+        public static Dictionary<(int, int), byte> Level19SolutionIndices = new Dictionary<(int, int), byte>
         {
             {(2,3), 3 },
             {(3,4), 4 },
             {(3,2), 5 },
             {(3,3), 6 },
             {(4,3), 7 },
-        };
+        }; //RRDDRRRDDLDLLUUULLDDRLUURRRRRDDLDLLUUDDRRURUULLLDDLLUUUURRRRDULLLLDDDDRRDRRURUULRDDLUUDDDLLURLLLUUUURRDDDUUULLDDDDRRDRRURUULLRRDDLDLLUUURRRDDLLDLUUDRRRUULDRDLLDLULLUUUURRRRDDRDDLURUL
 
         public static byte[,] Level21 = new byte[,]
         {

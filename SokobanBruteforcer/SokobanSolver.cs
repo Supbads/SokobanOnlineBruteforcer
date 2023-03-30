@@ -4,10 +4,18 @@ namespace SokobanBruteforcer
 {
     public class SokobanSolver
     {
-        public static bool SolveSokobanLevel(Level initialLevel)
+        /// <summary>
+        /// The main function to solve a level
+        /// </summary>
+        /// <param name="initialLevel">The initial state of the level that will be solved</param>
+        /// <param name="useStringSnapshotting">The snapshotting pattern that will be used: Raw string snapshotting or Byte Matrix Equality Comparison</param>
+        /// <param name="maxSteps">Maximum number of steps after which the solutions will be discarded</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static bool SolveSokobanLevel(Level initialLevel, bool useStringSnapshotting, int maxSteps = 120)
         {
             SolutionVariables._currentSolutions = Level._solutions;
-            SolutionVariables.useStringSnapshotting = false;
+            SolutionVariables.useStringSnapshotting = useStringSnapshotting;
 
             foreach (var solution in Level._solutions)
             {
@@ -16,7 +24,6 @@ namespace SokobanBruteforcer
                     throw new Exception("Finishing tile is a wall. Verify setup");
                 }
             }
-
 
             SolutionVariables._xLength = initialLevel.Grid.GetLength(0);
             SolutionVariables._yLength = initialLevel.Grid.GetLength(1);
@@ -30,13 +37,11 @@ namespace SokobanBruteforcer
             SolutionVariables._pendingLevelsSnapshotsByte = new Dictionary<byte[,], short>(3000, new ByteArrayComparer());
 
             int maxStepsLimitReached = 0;
-            int attempts = 0;
+            long attempts = 0;
             int duplicate = 0;
             bool print = false;
             bool manualMode = false;
-            int maxSteps = 120;
             var sw = Stopwatch.StartNew();
-
 
             if (manualMode)
             {
@@ -76,11 +81,7 @@ namespace SokobanBruteforcer
                         }
                         continue;
                     }
-                    if (print)
-                    {
-                        PrintLevel(level.Grid);
-                    }
-
+                    
                     if (SolutionVariables.foundSolution && SolutionVariables._bestSteps < level.StepsCount)
                     {
                         continue;
@@ -90,6 +91,11 @@ namespace SokobanBruteforcer
                     {
                         maxStepsLimitReached++;
                         continue;
+                    }
+
+                    if (print)
+                    {
+                        PrintLevel(level.Grid);
                     }
 
                     //PrintLevel(level._level);
@@ -167,18 +173,18 @@ namespace SokobanBruteforcer
             }
 
             sw.Stop();
-            Console.WriteLine($"Algorithm ended in {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).ToString("mm\\:ss\\:FF")}");
+            Console.WriteLine($"Algorithm ended in {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).ToString("mm\\:ss\\:FFFF")} ms");
             
             if (SolutionVariables._bestLevel != null)
             {
                 SolutionVariables._bestLevel.PrintSolutionsChain();
 
                 SolutionVariables._bestLevel.PrintHeroSteps();
-                Console.WriteLine($"Algorithm ended in {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).ToString("mm\\:ss\\:FF")}");
+                Console.WriteLine($"Algorithm ended in {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).ToString("mm\\:ss\\:FFFF")} ms");
             }
             else
             {
-                Console.WriteLine($"Algorithm ended in {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).ToString("mm\\:ss\\:FF")}");
+                Console.WriteLine($"Algorithm ended in {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).ToString("mm\\:ss\\:FFFF")}");
                 Console.WriteLine("No solution found");
             }
 
@@ -189,7 +195,6 @@ namespace SokobanBruteforcer
 
             return SolutionVariables._bestLevel != null;
         }
-
 
         static bool SolveManualMode(Level level)
         {
@@ -233,7 +238,6 @@ namespace SokobanBruteforcer
                 SokobanMovement.TryMoveUp(level);
                 SokobanMovement.TryMoveRight(level);
                 SokobanMovement.TryMoveDown(level);
-
             }
             else
             {
@@ -269,172 +273,6 @@ namespace SokobanBruteforcer
                         throw new Exception("Shouldn't be hit");
                 }
             }
-
-            //var heroIndex = level.HeroIndex;
-
-            //try left
-            //var x = heroIndex.x;
-            //var y = heroIndex.y - 1;
-            //if (y >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
-            //{
-            //    if (level.Grid[x, y] == GridLayouts.EmptyTile)
-            //    {
-            //        var copyLevel = GridUtils.CopyLevel(level.Grid);
-            //        copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
-            //        copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //        if (!ExcludeSolution(copyLevel, level.StepsCount))
-            //            _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //    }
-            //    else
-            //    {
-            //        if(y - 1 >=0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x, y - 1] == GridLayouts.Hole)
-            //        {
-            //            var copyLevel = GridUtils.CopyLevel(level.Grid);
-
-            //            copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
-            //            copyLevel[x, y - 1] = GridLayouts.EmptyTile;
-            //            copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //            if (!ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1), true))
-            //                _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //        }
-            //        else if (y - 1 >= 0 && level.Grid[x, y - 1] == GridLayouts.EmptyTile)
-            //        {
-            //            var copyLevel = GridUtils.CopyLevel(level.Grid);
-
-            //            copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
-            //            copyLevel[x, y - 1] = copyLevel[x, y];
-            //            copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //            if (!ExcludeSolution(copyLevel, level.StepsCount, (x, y - 1)))
-            //                _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //        }
-            //    }
-            //}
-
-            //try up
-            //x = heroIndex.x - 1;
-            //y = heroIndex.y;
-            //if (x >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
-            //{
-            //    if (level.Grid[x, y] == GridLayouts.EmptyTile)
-            //    {
-            //        var copyLevel = GridUtils.CopyLevel(level.Grid);
-            //        copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
-            //        copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //        if (!ExcludeSolution(copyLevel, level.StepsCount))
-            //            _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //    }
-            //    else
-            //    {
-            //        if (x - 1 >= 0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x - 1, y] == GridLayouts.Hole)
-            //        {
-            //            var copyLevel = GridUtils.CopyLevel(level.Grid);
-
-            //            copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
-            //            copyLevel[x - 1, y] = GridLayouts.EmptyTile;
-            //            copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //            if (!ExcludeSolution(copyLevel, level.StepsCount, (x - x, y), true))
-            //                _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //        }
-            //        else if (x - 1 >= 0 && level.Grid[x - 1, y] == GridLayouts.EmptyTile)
-            //        {
-            //            var copyLevel = GridUtils.CopyLevel(level.Grid);
-
-            //            copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
-            //            copyLevel[x - 1, y] = copyLevel[x, y];
-            //            copyLevel[x, y] = GridLayouts.HeroTile;
-
-
-            //            if (!ExcludeSolution(copyLevel, level.StepsCount, (x - 1, y)))
-            //                _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //        }
-            //    }
-            //}
-
-            //try right
-            //x = heroIndex.x;
-            //y = heroIndex.y + 1;
-            //if (y < _yLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
-            //{
-            //    if (level.Grid[x, y] == GridLayouts.EmptyTile)
-            //    {
-            //        var copyLevel = GridUtils.CopyLevel(level.Grid);
-            //        copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
-            //        copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //        if (!ExcludeSolution(copyLevel, level.StepsCount))
-            //            _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //    }
-            //    else
-            //    {
-            //        if (y + 1 >= 0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x, y + 1] == GridLayouts.Hole)
-            //        {
-            //            var copyLevel = GridUtils.CopyLevel(level.Grid);
-
-            //            copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
-            //            copyLevel[x, y + 1] = GridLayouts.EmptyTile;
-            //            copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //            if (!ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1), true))
-            //                _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //        }
-            //        else if (y + 1 < _yLength && level.Grid[x, y + 1] == GridLayouts.EmptyTile)
-            //        {
-            //            var copyLevel = GridUtils.CopyLevel(level.Grid);
-            //            copyLevel[x, heroIndex.y] = GridLayouts.EmptyTile;
-            //            copyLevel[x, y + 1] = copyLevel[x, y];
-            //            copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //            if (!ExcludeSolution(copyLevel, level.StepsCount, (x, y + 1)))
-            //                _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //        }
-            //    }
-            //}
-
-            // try down
-            //x = heroIndex.x + 1;
-            //y = heroIndex.y;
-            //if (x < _xLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
-            //{
-            //    if (level.Grid[x, y] == GridLayouts.EmptyTile)
-            //    {
-            //        var copyLevel = GridUtils.CopyLevel(level.Grid);
-
-            //        copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
-            //        copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //        if (!ExcludeSolution(copyLevel, level.StepsCount))
-            //            _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //    }
-            //    else
-            //    {
-            //        if (x + 1 >= 0 && level.Grid[x, y] == GridLayouts.HoleBlock && level.Grid[x + 1, y] == GridLayouts.Hole)
-            //        {
-            //            var copyLevel = GridUtils.CopyLevel(level.Grid);
-
-            //            copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
-            //            copyLevel[x + 1, y] = GridLayouts.EmptyTile;
-            //            copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //            if (!ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y), true))
-            //                _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //        }
-            //        else if (x + 1 < _xLength && level.Grid[x + 1, y] == GridLayouts.EmptyTile)
-            //        {
-            //            var copyLevel = GridUtils.CopyLevel(level.Grid);
-            //            copyLevel[heroIndex.x, y] = GridLayouts.EmptyTile;
-            //            copyLevel[x + 1, y] = copyLevel[x, y];
-            //            copyLevel[x, y] = GridLayouts.HeroTile;
-
-            //            if (!ExcludeSolution(copyLevel, level.StepsCount, (x + 1, y)))
-            //                _levelsToBruteforce.Enqueue(new Level(copyLevel, (x, y), level));
-            //        }
-            //    }
-            //}
         }
 
         static void PrintLevel(byte[,] level)

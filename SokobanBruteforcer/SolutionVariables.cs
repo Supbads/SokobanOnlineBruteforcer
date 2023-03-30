@@ -18,7 +18,7 @@
 
 
         //improvements
-        public static bool useStringSnapshotting = false;
+        public static bool useStringSnapshotting = true;
         public static Predicate<(int x, int y)> _levelInvalidationImprovement = (_) => false;
 
         //testing
