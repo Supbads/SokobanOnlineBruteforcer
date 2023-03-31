@@ -43,6 +43,8 @@ namespace SokobanBruteforcer
             bool manualMode = false;
             var sw = Stopwatch.StartNew();
 
+            var biggestStepsCount = 0;
+
             if (manualMode)
             {
                 while (SolutionVariables._levelsToBruteforce.Any())
@@ -85,6 +87,11 @@ namespace SokobanBruteforcer
                     if (SolutionVariables.foundSolution && SolutionVariables._bestSteps < level.StepsCount)
                     {
                         continue;
+                    }
+
+                    if(level.StepsCount > biggestStepsCount)
+                    {
+                        biggestStepsCount = level.StepsCount;
                     }
 
                     if (level.StepsCount > maxSteps)

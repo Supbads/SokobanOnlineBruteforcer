@@ -125,7 +125,7 @@ namespace SokobanBruteforcer
         {
             return _queue.Any();
         }
-
+        
         public T Dequeue()
         {
             if (_queue.Count == 0)
@@ -145,9 +145,13 @@ namespace SokobanBruteforcer
         public void RemoveByHash(string hash)
         {
             if (!_indices.ContainsKey(hash))
-                throw new ArgumentException("Item does not exist in queue");
+            {
+                return;
+                //throw new ArgumentException("Item does not exist in queue");
+            }
 
             LinkedListNode<T> node = _indices[hash];
+
             _indices.Remove(hash);
             _queue.Remove(node);
         }

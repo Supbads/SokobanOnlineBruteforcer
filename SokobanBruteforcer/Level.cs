@@ -8,6 +8,7 @@ namespace SokobanBruteforcer
     {
         public static Dictionary<(int x, int y), byte> _solutions;
         public static SHA1 sha1  = new SHA1CryptoServiceProvider();
+        public static MD5 md5 = new MD5CryptoServiceProvider();
 
         //Initial level constructor
         public Level(byte[,] grid, Level previousLevel, short stepsCount)
@@ -15,7 +16,6 @@ namespace SokobanBruteforcer
             Grid = grid;
             PreviousLevel = previousLevel;
             StepsCount = stepsCount;
-            //HeroIndex = FindHeroIndex();
             Pushed = false;
             IncomingDirection = Direction.None;
         }
@@ -27,7 +27,6 @@ namespace SokobanBruteforcer
                 StepsCount = (short)(previousLevel.StepsCount + 1);
             }
             Grid = level;
-            //HeroIndex = heroIndex;
             PreviousLevel = previousLevel;
         }
 
@@ -38,7 +37,6 @@ namespace SokobanBruteforcer
                 StepsCount = (short)(previousLevel.StepsCount + 1);
             }
             Grid = level;
-            //HeroIndex = heroIndex;
             PreviousLevel = previousLevel;
             Pushed = pushed;
             IncomingDirection = incomingDirection;
@@ -49,7 +47,6 @@ namespace SokobanBruteforcer
         public short StepsCount { get; set; }
         public bool Pushed { get; }
         public Direction IncomingDirection { get; }
-        //public (int x, int y) HeroIndex { get; set; }
 
         public (int x, int y) FindHeroIndex()
         {
@@ -96,11 +93,16 @@ namespace SokobanBruteforcer
             return true;
         }
 
+        public string GetHash()
+        {
+            return GenerateSnapshot();
+        }
+
         public string GenerateSnapshot()
         {
+            return GenerateSnapshotOld(Grid);
             //return GenerateSnapshotV3(Grid);
-            var snp = GenerateSnapshot(Grid);
-            return snp;
+            return GenerateSnapshot(Grid);
         }
 
         public static string GenerateSnapshotV2(byte[,] grid)
@@ -130,21 +132,6 @@ namespace SokobanBruteforcer
             return response;
         }
 
-        public byte GetSolvedItemsCount()
-        {
-            byte solvedItemsCount = 0;
-
-            foreach (var solution in _solutions)
-            {
-                if (Grid[solution.Key.Item1, solution.Key.Item2] == solution.Value)
-                {
-                    solvedItemsCount += 1;
-                }
-            }
-
-            return solvedItemsCount;
-        }
-
         public (byte solvedItemsCount, List<byte> solvedItems) GetSolvedItemsSnapshot()
         {
             List<byte> solvedItems = new List<byte>(6);
@@ -164,6 +151,7 @@ namespace SokobanBruteforcer
         {
             var lookForObjects = _solutions.Values.ToHashSet();
             lookForObjects.Add(GridLayouts.HeroTile);
+            lookForObjects.Add(GridLayouts.HoleBlock);
             List<(byte obj, int x, int y)> saughtObjectsCoordinates = new List<(byte, int, int)>(_solutions.Keys.Count);
 
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -179,11 +167,36 @@ namespace SokobanBruteforcer
 
             var snapshot = string.Join("", saughtObjectsCoordinates
                 .OrderBy(so => so.obj).ThenBy(so => so.x).ThenBy(so => so.y)
-                .Select(so => $"({so.x},{so.y})")
+                .Select(so => $"{so.x},{so.y}|")
                 .ToArray());
 
             return snapshot;
         }
+
+        //public static byte[,] GenerateSnapshotByteArray(byte[,] grid)
+        //{
+        //    var lookForObjects = _solutions.Values.ToHashSet();
+        //    lookForObjects.Add(GridLayouts.HeroTile);
+        //    List<(byte obj, int x, int y)> saughtObjectsCoordinates = new List<(byte, int, int)>(_solutions.Keys.Count);
+
+        //    for (int i = 0; i < grid.GetLength(0); i++)
+        //    {
+        //        for (int j = 0; j < grid.GetLength(1); j++)
+        //        {
+        //            if (lookForObjects.Contains(grid[i, j]))
+        //            {
+        //                saughtObjectsCoordinates.Add((grid[i, j], i, j));
+        //            }
+        //        }
+        //    }
+
+        //    var snapshot = string.Join("", saughtObjectsCoordinates
+        //        .OrderBy(so => so.obj).ThenBy(so => so.x).ThenBy(so => so.y)
+        //        .Select(so => $"({so.x},{so.y})")
+        //        .ToArray());
+
+        //    return snapshot;
+        //}
 
         public static string GenerateSnapshot(byte[,] grid)
         {
@@ -196,6 +209,7 @@ namespace SokobanBruteforcer
                 }
             }
 
+            //return string.Concat(md5.ComputeHash(buffer).Select(x => x.ToString("X2")));
             return string.Concat(sha1.ComputeHash(buffer).Select(x => x.ToString("X2")));
         }
 
@@ -328,11 +342,6 @@ namespace SokobanBruteforcer
             Console.WriteLine();
             Console.WriteLine("End");
             Console.WriteLine();
-        }
-
-        public string GetHash()
-        {
-            return GenerateSnapshot(Grid);
         }
     }
 }
