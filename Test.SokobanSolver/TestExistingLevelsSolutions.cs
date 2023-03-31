@@ -52,7 +52,7 @@ namespace Test_SokobanSolver
             var soloveDuration = sw.ElapsedMilliseconds;
             Assert.IsTrue(res);
             Assert.Less(soloveDuration, 14 * 1000, "Sokoban level 19 took more than 14 seconds");
-            //14 seconds -> 7.7
+            //14 seconds -> 7.7 pending items opt -> 4.7 sb solution
         }
 
         [Test]
@@ -68,8 +68,11 @@ namespace Test_SokobanSolver
             Assert.Less(soloveDuration, 60 * 1000, "Sokoban level 21 took more than 60 seconds");
 
             Assert.IsTrue(res);
-            //44.3 sec after optimization
-            //1min 56 sec last execution
+            //1min 56 sec execution 30.03
+            //44.3 sec after proper pending items optimization
+            
+            //32.6 with Snapshot v2 algo
+
         }
 
         [Test]

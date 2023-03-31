@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace SokobanBruteforcer
@@ -8,14 +7,12 @@ namespace SokobanBruteforcer
     {
         public static int EqualsChecks = 0;
         public static int HashCodes = 0;
+        private static StringBuilder sb;
 
         public ByteArrayComparer()
         {
-            this.HashProvider = new SHA1CryptoServiceProvider();
-
+            sb = new StringBuilder(SolutionVariables._xLength * SolutionVariables._yLength);
         }
-
-        public SHA1CryptoServiceProvider HashProvider { get; }
 
         public bool Equals(byte[,]? x, byte[,]? y)
         {
@@ -34,10 +31,11 @@ namespace SokobanBruteforcer
             return true;
         }
 
+        //old
         public int GetHashCode([DisallowNull] byte[,] obj)
         {
             HashCodes++;
-            StringBuilder sb = new StringBuilder(SolutionVariables._xLength * SolutionVariables._yLength);
+            sb.Clear();
             for (int i = 0; i < SolutionVariables._xLength; i++)
             {
                 for (int j = 0; j < SolutionVariables._yLength; j++)
@@ -47,6 +45,28 @@ namespace SokobanBruteforcer
             }
 
             return sb.ToString().GetHashCode();
+        }
+
+        public int GetHashCodeV2([DisallowNull] byte[,] grid)
+        {
+            unchecked
+            {
+                int hash = 17;
+
+                for (int i = 0; i < grid.GetLength(0); i++)
+                {
+                    for (int j = 0; j < grid.GetLength(1); j++)
+                    {
+                        if (grid[i, j] != 0)
+                        {
+                            hash = hash * 23 + Convert.ToInt32(Math.Pow(grid[i, j], i));
+                            hash = hash * 23 + Convert.ToInt32(Math.Pow(grid[i, j], j));
+                        }
+                    }
+                }
+
+                return hash;
+            }
         }
     }
 

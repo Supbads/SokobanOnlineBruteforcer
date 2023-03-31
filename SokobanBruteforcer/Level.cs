@@ -9,10 +9,12 @@ namespace SokobanBruteforcer
         public static Dictionary<(int x, int y), byte> _solutions;
         public static SHA1 sha1  = new SHA1CryptoServiceProvider();
         public static MD5 md5 = new MD5CryptoServiceProvider();
+        private static StringBuilder sb;
 
         //Initial level constructor
         public Level(byte[,] grid, Level previousLevel, short stepsCount)
         {
+            sb = new StringBuilder(SolutionVariables._xLength * SolutionVariables._yLength);
             Grid = grid;
             PreviousLevel = previousLevel;
             StepsCount = stepsCount;
@@ -93,21 +95,28 @@ namespace SokobanBruteforcer
             return true;
         }
 
+        public byte[,] GetGrid()
+        {
+            return Grid;
+        }
+
         public string GetHash()
         {
-            return GenerateSnapshot();
+            return GenerateSnapshotGrid(Grid);
         }
 
         public string GenerateSnapshot()
         {
-            //return GenerateSnapshotOld(Grid);
-            //return GenerateSnapshotV3(Grid);
-            return GenerateSnapshot(Grid);
+            return GenerateSnapshotGrid(Grid);
         }
 
-        public byte[,] GetGrid()
+        public static string GenerateSnapshotGrid(byte[,] grid)
         {
-            return Grid;
+            //return GenerateSnapshot(grid);
+            //return GenerateSnapshotV2(grid);
+            //return GenerateSnapshotOld(grid);
+            //return GenerateSnapshotV3(grid);
+            return GenerateSnapshotV4(grid);
         }
 
         public static string GenerateSnapshotV2(byte[,] grid)
@@ -137,19 +146,19 @@ namespace SokobanBruteforcer
             return response;
         }
 
-        public (byte solvedItemsCount, List<byte> solvedItems) GetSolvedItemsSnapshot()
+        
+        public static string GenerateSnapshotV4(byte[,] grid)
         {
-            List<byte> solvedItems = new List<byte>(6);
-
-            foreach (var solution in _solutions)
+            sb.Clear();
+            for (int i = 0; i < SolutionVariables._xLength; i++)
             {
-                if (Grid[solution.Key.Item1, solution.Key.Item2] == solution.Value)
+                for (int j = 0; j < SolutionVariables._yLength; j++)
                 {
-                    solvedItems.Add(solution.Value);
+                    sb.Append(grid[i, j].ToString());
                 }
             }
 
-            return ((byte)solvedItems.Count, solvedItems);
+            return sb.ToString().GetHashCode().ToString();
         }
 
         public static string GenerateSnapshotOld(byte[,] grid)
@@ -210,12 +219,12 @@ namespace SokobanBruteforcer
             {
                 for (int j = 0; j < SolutionVariables._yLength; j++)
                 {
-                    buffer[SolutionVariables._xLength * i + j] = grid[i, j];
+                    buffer[(SolutionVariables._xLength * i) + j] = grid[i, j];
                 }
             }
 
-            return string.Concat(md5.ComputeHash(buffer).Select(x => x.ToString("X2")));
-            //return string.Concat(sha1.ComputeHash(buffer).Select(x => x.ToString("X2")));
+            //return string.Concat(md5.ComputeHash(buffer).Select(x => x.ToString("X2")));
+            return string.Concat(sha1.ComputeHash(buffer).Select(x => x.ToString("X2")));
         }
 
         public static string GenerateSnapshotV3(byte[,] lvl)
@@ -347,6 +356,21 @@ namespace SokobanBruteforcer
             Console.WriteLine();
             Console.WriteLine("End");
             Console.WriteLine();
+        }
+
+        public (byte solvedItemsCount, List<byte> solvedItems) GetSolvedItemsSnapshot()
+        {
+            List<byte> solvedItems = new List<byte>(6);
+
+            foreach (var solution in _solutions)
+            {
+                if (Grid[solution.Key.Item1, solution.Key.Item2] == solution.Value)
+                {
+                    solvedItems.Add(solution.Value);
+                }
+            }
+
+            return ((byte)solvedItems.Count, solvedItems);
         }
     }
 }

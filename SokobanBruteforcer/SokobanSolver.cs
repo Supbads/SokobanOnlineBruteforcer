@@ -31,10 +31,12 @@ namespace SokobanBruteforcer
             SolutionVariables._levelsToBruteforce = new IndexedQueue<Level>(200000);
             SolutionVariables._levelsToBruteforce.Enqueue(initialLevel);
             //add next potential steps to a queue or stack
-            SolutionVariables._visitedLevelsSnapshots = new Dictionary<string, short>(2000);
-            SolutionVariables._pendingLevelsSnapshots = new Dictionary<string, short>(2000);
+            SolutionVariables._visitedLevelsSnapshots = new Dictionary<string, short>(10000);
+            SolutionVariables._pendingLevelsSnapshots = new Dictionary<string, short>(10000);
             SolutionVariables._visitedLevelsSnapshotsByte = new Dictionary<byte[,], short>(500000, new ByteArrayComparer());
             SolutionVariables._pendingLevelsSnapshotsByte = new Dictionary<byte[,], short>(500000, new ByteArrayComparer());
+
+            HashSet<string> duplicateSnapshots = new HashSet<string>(100);
 
             int maxStepsLimitReached = 0;
             long attempts = 0;
@@ -105,14 +107,18 @@ namespace SokobanBruteforcer
                     //    PrintLevel(level.Grid);
                     //}
 
-                    //PrintLevel(level._level);
-
                     #region legacySnapshotting
                     if (SolutionVariables.useStringSnapshotting)
                     {
                         var snp = level.GenerateSnapshot();
                         if (SolutionVariables._visitedLevelsSnapshots.ContainsKey(snp) && SolutionVariables._visitedLevelsSnapshots[snp] < level.StepsCount)
                         {
+                            if (duplicateSnapshots.Contains(snp))
+                            {
+                                Console.WriteLine($"Already contained snp: {snp}");
+                            }
+                            duplicateSnapshots.Add(snp);
+
                             duplicate += 1;
                             if (duplicate % 50000 == 0)
                             {

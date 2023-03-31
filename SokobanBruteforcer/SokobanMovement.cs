@@ -194,7 +194,7 @@
                 return ExcludeSolutionByteArrayImpl(level, stepsCount, boxIndices, skipWallChecks);
             }
 
-            var snapshot = Level.GenerateSnapshot(level);
+            var snapshot = Level.GenerateSnapshotGrid(level);
             //var snapshot = Level.GenerateSnapshotOld(level);
             if (!boxIndices.HasValue)
             {
