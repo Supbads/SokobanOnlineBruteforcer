@@ -5,7 +5,12 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SokobanBruteforcer", "SokobanBruteforcer\SokobanBruteforcer.csproj", "{01D160BD-C42B-4214-8D6E-8788A617FE2B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.SokobanSolver", "Test.SokobanSolver\Test.SokobanSolver.csproj", "{E672859D-EF73-4131-94C2-FA2EB01B3BF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.SokobanSolver", "Test.SokobanSolver\Test.SokobanSolver.csproj", "{E672859D-EF73-4131-94C2-FA2EB01B3BF6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1C4EBC1D-611E-4487-B501-F7E7AB653A55}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,56 +1,57 @@
 ﻿using System.Text;
 using System.Security.Cryptography;
+using SokobanBruteforcer.Interfaces;
 
 namespace SokobanBruteforcer
 {
-    public class Level : ILevel
+    public class Level : IHashable
     {
         public static Dictionary<(int x, int y), byte> _solutions;
         public static SHA1 sha1  = new SHA1CryptoServiceProvider();
 
         //Initial level constructor
-        public Level(byte[,] grid, ILevel previousLevel, short stepsCount)
+        public Level(byte[,] grid, Level previousLevel, short stepsCount)
         {
             Grid = grid;
             PreviousLevel = previousLevel;
             StepsCount = stepsCount;
-            HeroIndex = FindHeroIndex();
+            //HeroIndex = FindHeroIndex();
             Pushed = false;
             IncomingDirection = Direction.None;
         }
 
-        public Level(byte[,] level, (int, int) heroIndex, ILevel previousLevel)
+        public Level(byte[,] level, (int, int) heroIndex, Level previousLevel)
         {
             if(previousLevel != null)
             {
                 StepsCount = (short)(previousLevel.StepsCount + 1);
             }
             Grid = level;
-            HeroIndex = heroIndex;
+            //HeroIndex = heroIndex;
             PreviousLevel = previousLevel;
         }
 
-        public Level(byte[,] level, (int, int) heroIndex, ILevel previousLevel, bool pushed, Direction incomingDirection)
+        public Level(byte[,] level, (int, int) heroIndex, Level previousLevel, bool pushed, Direction incomingDirection)
         {
             if (previousLevel != null)
             {
                 StepsCount = (short)(previousLevel.StepsCount + 1);
             }
             Grid = level;
-            HeroIndex = heroIndex;
+            //HeroIndex = heroIndex;
             PreviousLevel = previousLevel;
             Pushed = pushed;
             IncomingDirection = incomingDirection;
         }
 
         public byte[,] Grid { get; set; }
-        public ILevel PreviousLevel { get; set; }
+        public Level PreviousLevel { get; set; }
         public short StepsCount { get; set; }
-        public (int x, int y) HeroIndex { get; set; }
         public bool Pushed { get; }
         public Direction IncomingDirection { get; }
+        //public (int x, int y) HeroIndex { get; set; }
 
-        public (int, int) FindHeroIndex()
+        public (int x, int y) FindHeroIndex()
         {
             for (int i = 0; i < Grid.Length; i++)
             {
@@ -242,9 +243,9 @@ namespace SokobanBruteforcer
             return grids;
         }
 
-        public List<ILevel> GetLevelsChain(bool reverse = true)
+        public List<Level> GetLevelsChain(bool reverse = true)
         {
-            List<ILevel> levels = new List<ILevel>(StepsCount);
+            List<Level> levels = new List<Level>(StepsCount);
             levels.Add(this);
             var prevLevel = PreviousLevel;
             while(prevLevel != null)
@@ -279,8 +280,8 @@ namespace SokobanBruteforcer
             StringBuilder sb = new StringBuilder(StepsCount + 1);
             for (int i = 0; i < levels.Count - 1; i++)
             {
-                var currentHeroIndex = levels[i].HeroIndex;
-                var nextHeroIndex = levels[i + 1].HeroIndex;
+                var currentHeroIndex = levels[i].FindHeroIndex();
+                var nextHeroIndex = levels[i + 1].FindHeroIndex();
 
                 if (currentHeroIndex.x < nextHeroIndex.x)
                 {
@@ -327,6 +328,11 @@ namespace SokobanBruteforcer
             Console.WriteLine();
             Console.WriteLine("End");
             Console.WriteLine();
+        }
+
+        public string GetHash()
+        {
+            return GenerateSnapshot(Grid);
         }
     }
 }

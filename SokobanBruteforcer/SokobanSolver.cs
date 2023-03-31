@@ -28,7 +28,7 @@ namespace SokobanBruteforcer
             SolutionVariables._xLength = initialLevel.Grid.GetLength(0);
             SolutionVariables._yLength = initialLevel.Grid.GetLength(1);
 
-            SolutionVariables._levelsToBruteforce = new Queue<Level>(5000);
+            SolutionVariables._levelsToBruteforce = new IndexedQueue<Level>(5000);
             SolutionVariables._levelsToBruteforce.Enqueue(initialLevel);
             //add next potential steps to a queue or stack
             SolutionVariables._visitedLevelsSnapshots = new Dictionary<string, short>(3000);
@@ -198,6 +198,7 @@ namespace SokobanBruteforcer
 
         static bool SolveManualMode(Level level)
         {
+            var heroIndex = level.FindHeroIndex();
             PrintLevel(level.Grid);
             Console.Write("Input Key: ");
             var key = Console.ReadKey().Key;
@@ -205,19 +206,19 @@ namespace SokobanBruteforcer
 
             if (key == ConsoleKey.LeftArrow)
             {
-                SokobanMovement.TryMoveLeft(level, true);
+                SokobanMovement.TryMoveLeft(level, heroIndex, true);
             }
             else if (key == ConsoleKey.UpArrow)
             {
-                SokobanMovement.TryMoveUp(level, true);
+                SokobanMovement.TryMoveUp(level, heroIndex, true);
             }
             else if (key == ConsoleKey.DownArrow)
             {
-                SokobanMovement.TryMoveDown(level, true);
+                SokobanMovement.TryMoveDown(level, heroIndex, true);
             }
             else if (key == ConsoleKey.RightArrow)
             {
-                SokobanMovement.TryMoveRight(level, true);
+                SokobanMovement.TryMoveRight(level, heroIndex, true);
             }
 
             if (!SolutionVariables._levelsToBruteforce.Any())
@@ -232,42 +233,43 @@ namespace SokobanBruteforcer
 
         static void Solve(Level level)
         {
+            var heroIndex = level.FindHeroIndex();
             if (level.Pushed)
             {
-                SokobanMovement.TryMoveLeft(level);
-                SokobanMovement.TryMoveUp(level);
-                SokobanMovement.TryMoveRight(level);
-                SokobanMovement.TryMoveDown(level);
+                SokobanMovement.TryMoveLeft(level, heroIndex);
+                SokobanMovement.TryMoveUp(level, heroIndex);
+                SokobanMovement.TryMoveRight(level, heroIndex);
+                SokobanMovement.TryMoveDown(level, heroIndex);
             }
             else
             {
                 switch (level.IncomingDirection)
                 {
                     case Direction.Up:
-                        SokobanMovement.TryMoveLeft(level);
-                        SokobanMovement.TryMoveUp(level);
-                        SokobanMovement.TryMoveRight(level);
+                        SokobanMovement.TryMoveLeft(level, heroIndex);
+                        SokobanMovement.TryMoveUp(level, heroIndex);
+                        SokobanMovement.TryMoveRight(level, heroIndex);
                         break;
                     case Direction.Left:
-                        SokobanMovement.TryMoveLeft(level);
-                        SokobanMovement.TryMoveUp(level);
-                        SokobanMovement.TryMoveDown(level);
+                        SokobanMovement.TryMoveLeft(level, heroIndex);
+                        SokobanMovement.TryMoveUp(level, heroIndex);
+                        SokobanMovement.TryMoveDown(level, heroIndex);
                         break;
                     case Direction.Right:
-                        SokobanMovement.TryMoveUp(level);
-                        SokobanMovement.TryMoveRight(level);
-                        SokobanMovement.TryMoveDown(level);
+                        SokobanMovement.TryMoveUp(level, heroIndex);
+                        SokobanMovement.TryMoveRight(level, heroIndex);
+                        SokobanMovement.TryMoveDown(level, heroIndex);
                         break;
                     case Direction.Down:
-                        SokobanMovement.TryMoveLeft(level);
-                        SokobanMovement.TryMoveRight(level);
-                        SokobanMovement.TryMoveDown(level);
+                        SokobanMovement.TryMoveLeft(level, heroIndex);
+                        SokobanMovement.TryMoveRight(level, heroIndex);
+                        SokobanMovement.TryMoveDown(level, heroIndex);
                         break;
                     case Direction.None:
-                        SokobanMovement.TryMoveLeft(level);
-                        SokobanMovement.TryMoveUp(level);
-                        SokobanMovement.TryMoveRight(level);
-                        SokobanMovement.TryMoveDown(level);
+                        SokobanMovement.TryMoveLeft(level, heroIndex);
+                        SokobanMovement.TryMoveUp(level, heroIndex);
+                        SokobanMovement.TryMoveRight(level, heroIndex);
+                        SokobanMovement.TryMoveDown(level, heroIndex);
                         break;
                     default:
                         throw new Exception("Shouldn't be hit");

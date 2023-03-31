@@ -4,7 +4,7 @@
     {
         public static int _xLength;
         public static int _yLength;
-        public static Queue<Level> _levelsToBruteforce; //todo test queue vs stack
+        public static IndexedQueue<Level> _levelsToBruteforce; //todo test queue vs stack
         public static int _bestSteps = int.MaxValue;
         public static Level _bestLevel;
 

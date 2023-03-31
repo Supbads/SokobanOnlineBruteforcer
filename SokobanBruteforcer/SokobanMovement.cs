@@ -5,9 +5,8 @@
         public static int _xLength = SolutionVariables._xLength;
         public static int _yLength = SolutionVariables._yLength;
 
-        public static void TryMoveRight(Level level, bool skipExlusionChecks = false)
+        public static void TryMoveRight(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = false)
         {
-            var heroIndex = level.HeroIndex;
             var x = heroIndex.x;
             var y = heroIndex.y + 1;
             if (y < _yLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -50,9 +49,8 @@
             }
         }
 
-        public static void TryMoveDown(Level level, bool skipExlusionChecks = false)
+        public static void TryMoveDown(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = false)
         {
-            var heroIndex = level.HeroIndex;
             var x = heroIndex.x + 1;
             var y = heroIndex.y;
             if (x < _xLength && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -96,9 +94,8 @@
             }
         }
 
-        public static void TryMoveUp(Level level, bool skipExlusionChecks = false)
+        public static void TryMoveUp(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = false)
         {
-            var heroIndex = level.HeroIndex;
             var x = heroIndex.x - 1;
             var y = heroIndex.y;
             if (x >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -142,9 +139,8 @@
             }
         }
 
-        public static void TryMoveLeft(Level level, bool skipExlusionChecks = false)
+        public static void TryMoveLeft(Level level, (int x, int y) heroIndex, bool skipExlusionChecks = false)
         {
-            var heroIndex = level.HeroIndex;
             var x = heroIndex.x;
             var y = heroIndex.y - 1;
             if (y >= 0 && level.Grid[x, y] != GridLayouts.Wall && level.Grid[x, y] != GridLayouts.Hole)
@@ -216,6 +212,7 @@
                     }
                     else
                     {
+                        SolutionVariables._levelsToBruteforce.RemoveByHash(snapshot);
                         SolutionVariables._pendingLevelsSnapshots[snapshot] = stepsCount;
                         return false;
                     }
@@ -249,6 +246,7 @@
                     }
                     else
                     {
+                        SolutionVariables._levelsToBruteforce.RemoveByHash(snapshot);
                         SolutionVariables._pendingLevelsSnapshots[snapshot] = stepsCount;
                         return false;
                     }

@@ -23,7 +23,7 @@ namespace Test_SokobanSolver
             var soloveDuration = sw.ElapsedMilliseconds;
 
             Assert.IsTrue(res);
-            Assert.Less(soloveDuration, 7 * 1000, "Sokoban junir level 1 took more than 10 seconds");
+            Assert.Less(soloveDuration, 7 * 1000, "Sokoban junior level 1 took more than 7 seconds");
             //21 steps best
         }
 
@@ -50,7 +50,7 @@ namespace Test_SokobanSolver
             bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 190);
             var soloveDuration = sw.ElapsedMilliseconds;
             Assert.IsTrue(res);
-            Assert.Less(soloveDuration, 14 * 1000, "Sokoban junir level 1 took more than 14 seconds");
+            Assert.Less(soloveDuration, 14 * 1000, "Sokoban level 19 took more than 14 seconds");
         }
 
         [Test]
