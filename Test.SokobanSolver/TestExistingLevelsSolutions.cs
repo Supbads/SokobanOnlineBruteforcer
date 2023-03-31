@@ -70,9 +70,10 @@ namespace Test_SokobanSolver
             Assert.IsTrue(res);
             //1min 56 sec execution 30.03
             //44.3 sec after proper pending items optimization
-            
-            //32.6 with Snapshot v2 algo
 
+            //51.5 with old snapshot algo
+            //32.6 with Snapshot v2 algo
+            //25.5 with snapshot v4 algo
         }
 
         [Test]

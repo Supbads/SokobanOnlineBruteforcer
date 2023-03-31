@@ -112,17 +112,14 @@ namespace SokobanBruteforcer
 
         public static string GenerateSnapshotGrid(byte[,] grid)
         {
-            //return GenerateSnapshot(grid);
-            //return GenerateSnapshotV2(grid);
             //return GenerateSnapshotOld(grid);
-            //return GenerateSnapshotV3(grid);
-            return GenerateSnapshotV4(grid);
+            //return GenerateSnapshot(grid);
+            return GenerateSnapshotV2(grid);
+            //return GenerateSnapshotV4(grid);
         }
 
         public static string GenerateSnapshotV2(byte[,] grid)
         {
-            string response = String.Empty;
-
             unchecked
             {
                 long hash = 17;
@@ -134,16 +131,13 @@ namespace SokobanBruteforcer
                         if(grid[i, j] != 0)
                         {
                             hash = hash * 23 + Convert.ToInt64(Math.Pow(grid[i, j], i));
-                            hash = hash * 23 + Convert.ToInt64(Math.Pow(grid[i, j], j));
-                            
+                            hash = hash * 23 + Convert.ToInt64(Math.Pow(grid[i, j], j));                            
                         }
                     }
                 }
 
-                response = hash.ToString();
+                return hash.ToString();
             }
-
-            return response;
         }
 
         
@@ -165,7 +159,7 @@ namespace SokobanBruteforcer
         {
             var lookForObjects = _solutions.Values.ToHashSet();
             lookForObjects.Add(GridLayouts.HeroTile);
-            lookForObjects.Add(GridLayouts.HoleBlock);
+            //lookForObjects.Add(GridLayouts.HoleBlock);
             List<(byte obj, int x, int y)> saughtObjectsCoordinates = new List<(byte, int, int)>(_solutions.Keys.Count);
 
             for (int i = 0; i < grid.GetLength(0); i++)
@@ -225,32 +219,6 @@ namespace SokobanBruteforcer
 
             //return string.Concat(md5.ComputeHash(buffer).Select(x => x.ToString("X2")));
             return string.Concat(sha1.ComputeHash(buffer).Select(x => x.ToString("X2")));
-        }
-
-        public static string GenerateSnapshotV3(byte[,] lvl)
-        {
-            var lookForObjects = _solutions.Values.ToHashSet();
-            lookForObjects.Add(GridLayouts.HeroTile);
-            lookForObjects.Add(GridLayouts.HoleBlock);
-            List<(byte obj, int x, int y)> saughtObjectsCoordinates = new List<(byte, int, int)>(_solutions.Keys.Count);
-
-            for (int i = 0; i < lvl.GetLength(0); i++)
-            {
-                for (int j = 0; j < lvl.GetLength(1); j++)
-                {
-                    if (lookForObjects.Contains(lvl[i, j]))
-                    {
-                        saughtObjectsCoordinates.Add((lvl[i, j], i, j));
-                    }
-                }
-            }
-
-            var snapshot = string.Join("", saughtObjectsCoordinates
-                .OrderBy(so => so.obj).ThenBy(so => so.x).ThenBy(so => so.y)
-                .Select(so => $"({so.x},{so.y})")
-                .ToArray());
-
-            return snapshot.GetHashCode().ToString();
         }
 
         public List<byte[,]> GetGridsChain(bool reverse = true)
