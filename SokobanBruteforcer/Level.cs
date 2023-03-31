@@ -15,7 +15,6 @@ namespace SokobanBruteforcer
             PreviousLevel = previousLevel;
             StepsCount = stepsCount;
             HeroIndex = FindHeroIndex();
-            IsSolved = IsLevelSolved(Grid);
             Pushed = false;
             IncomingDirection = Direction.None;
         }
@@ -29,7 +28,6 @@ namespace SokobanBruteforcer
             Grid = level;
             HeroIndex = heroIndex;
             PreviousLevel = previousLevel;
-            IsSolved = IsLevelSolved(Grid);
         }
 
         public Level(byte[,] level, (int, int) heroIndex, ILevel previousLevel, bool pushed, Direction incomingDirection)
@@ -41,14 +39,10 @@ namespace SokobanBruteforcer
             Grid = level;
             HeroIndex = heroIndex;
             PreviousLevel = previousLevel;
-            IsSolved = IsLevelSolved(Grid);
             Pushed = pushed;
             IncomingDirection = incomingDirection;
-            //todo optimize add if we did not push and the direction is X, don't solve the opposite direction as it has been visited
-            
         }
 
-        public bool IsSolved { get; }
         public byte[,] Grid { get; set; }
         public ILevel PreviousLevel { get; set; }
         public short StepsCount { get; set; }
@@ -72,11 +66,27 @@ namespace SokobanBruteforcer
             throw new Exception("no hero index found");
         }
 
-        private bool IsLevelSolved(byte[,] level)
+        public static (int, int) FindHeroIndexStatic(byte[,] grid)
+        {
+            for (int i = 0; i < grid.Length; i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    if (grid[i, j] == GridLayouts.HeroTile)
+                    {
+                        return (i, j);
+                    }
+                }
+            }
+
+            throw new Exception("no hero index found");
+        }
+
+        public bool IsLevelSolved()
         {
             foreach (var solution in _solutions)
             {
-                if (level[solution.Key.Item1, solution.Key.Item2] != solution.Value)
+                if (this.Grid[solution.Key.Item1, solution.Key.Item2] != solution.Value)
                 {
                     return false;
                 }

@@ -48,7 +48,7 @@ namespace SokobanBruteforcer
                 while (SolutionVariables._levelsToBruteforce.Any())
                 {
                     var level = SolutionVariables._levelsToBruteforce.Dequeue();
-                    if (level.IsSolved)
+                    if (level.IsLevelSolved())
                     {
                         Console.WriteLine($"Level was solved in steps {attempts}");
                     }
@@ -64,7 +64,7 @@ namespace SokobanBruteforcer
                 {
                     var level = SolutionVariables._levelsToBruteforce.Dequeue();
 
-                    if (level.IsSolved)
+                    if (level.IsLevelSolved())
                     {
                         SolutionVariables.foundSolution = true;
                         Console.WriteLine("Solution Found");

@@ -21,12 +21,17 @@ public class Program
         //Level._solutions = currentSolution;
         //var initialLevel = new Level(EmptyHolesTest.LevelHolyHow4, null, 0);
 
-        var currentSolution = GridLayouts.Level58SolutionIndices;
+        var currentSolution = EmptyHolesTest.LevelHolyHow4Solutions;
         Level._solutions = currentSolution;
-        SolutionVariables._levelInvalidationImprovement = GridLayouts.Level58InvalidationImprovement;
-        var initialLevel = new Level(GridLayouts.Level58, null, 0);
+        var initialLevel = new Level(EmptyHolesTest.LevelHolyHow4, null, 0);
+        bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 100);
 
-        SokobanSolver.SolveSokobanLevel(initialLevel, false, 252);
+        //var currentSolution = GridLayouts.Level58SolutionIndices;
+        //Level._solutions = currentSolution;
+        //SolutionVariables._levelInvalidationImprovement = GridLayouts.Level58InvalidationImprovement;
+        //var initialLevel = new Level(GridLayouts.Level58, null, 0);
+
+        SokobanSolver.SolveSokobanLevel(initialLevel, true, 252);
 
 
     }

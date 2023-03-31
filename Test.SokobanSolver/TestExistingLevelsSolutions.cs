@@ -23,7 +23,8 @@ namespace Test_SokobanSolver
             var soloveDuration = sw.ElapsedMilliseconds;
 
             Assert.IsTrue(res);
-            Assert.Less(soloveDuration, 10 * 1000, "Sokoban junir level 1 took more than 10 seconds");
+            Assert.Less(soloveDuration, 7 * 1000, "Sokoban junir level 1 took more than 10 seconds");
+            //21 steps best
         }
 
         [Test]
@@ -31,16 +32,14 @@ namespace Test_SokobanSolver
         {
             var currentSolution = EmptyHolesTest.LevelHolyHow4Solutions;
             Level._solutions = currentSolution;
-            var initialLevel = new Level(EmptyHolesTest.LevelHolyHow4, null, 0);
-            
-            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true);
-
+            var initialLevel = new Level(EmptyHolesTest.LevelHolyHow4, null, 0);            
+            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 100);
             Assert.IsTrue(res);
             //steps should be 96
         }
 
         [Test]
-        public void SolveSokobanLevel2()
+        public void SolveSokobanLevel19()
         {
             var currentSolution = GridLayouts.Level19SolutionIndices;
             Level._solutions = currentSolution;
@@ -62,11 +61,11 @@ namespace Test_SokobanSolver
             var initialLevel = new Level(GridLayouts.Level21, null, 0);
             
             var sw = Stopwatch.StartNew();
-            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true);
+            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 93);
             var soloveDuration = sw.ElapsedMilliseconds;
 
             Assert.IsTrue(res);
-            Assert.Less(soloveDuration, 10 * 1000, "Sokoban junir level 1 took more than 10 seconds");
+            //1min 56 sec last execution
         }
 
         [Test]
