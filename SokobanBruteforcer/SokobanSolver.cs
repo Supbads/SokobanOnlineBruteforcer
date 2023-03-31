@@ -28,22 +28,22 @@ namespace SokobanBruteforcer
             SolutionVariables._xLength = initialLevel.Grid.GetLength(0);
             SolutionVariables._yLength = initialLevel.Grid.GetLength(1);
 
-            SolutionVariables._levelsToBruteforce = new IndexedQueue<Level>(5000);
+            SolutionVariables._levelsToBruteforce = new IndexedQueue<Level>(200000);
             SolutionVariables._levelsToBruteforce.Enqueue(initialLevel);
             //add next potential steps to a queue or stack
-            SolutionVariables._visitedLevelsSnapshots = new Dictionary<string, short>(3000);
-            SolutionVariables._pendingLevelsSnapshots = new Dictionary<string, short>(3000);
-            SolutionVariables._visitedLevelsSnapshotsByte = new Dictionary<byte[,], short>(3000, new ByteArrayComparer());
-            SolutionVariables._pendingLevelsSnapshotsByte = new Dictionary<byte[,], short>(3000, new ByteArrayComparer());
+            SolutionVariables._visitedLevelsSnapshots = new Dictionary<string, short>(2000);
+            SolutionVariables._pendingLevelsSnapshots = new Dictionary<string, short>(2000);
+            SolutionVariables._visitedLevelsSnapshotsByte = new Dictionary<byte[,], short>(500000, new ByteArrayComparer());
+            SolutionVariables._pendingLevelsSnapshotsByte = new Dictionary<byte[,], short>(500000, new ByteArrayComparer());
 
             int maxStepsLimitReached = 0;
             long attempts = 0;
             int duplicate = 0;
-            bool print = false;
             bool manualMode = false;
             var sw = Stopwatch.StartNew();
 
-            var biggestStepsCount = 0;
+            //bool print = false;
+            //var biggestStepsCount = 0;
 
             if (manualMode)
             {
@@ -89,10 +89,10 @@ namespace SokobanBruteforcer
                         continue;
                     }
 
-                    if(level.StepsCount > biggestStepsCount)
-                    {
-                        biggestStepsCount = level.StepsCount;
-                    }
+                    //if(level.StepsCount > biggestStepsCount)
+                    //{
+                    //    biggestStepsCount = level.StepsCount;
+                    //}
 
                     if (level.StepsCount > maxSteps)
                     {
@@ -100,10 +100,10 @@ namespace SokobanBruteforcer
                         continue;
                     }
 
-                    if (print)
-                    {
-                        PrintLevel(level.Grid);
-                    }
+                    //if (print)
+                    //{
+                    //    PrintLevel(level.Grid);
+                    //}
 
                     //PrintLevel(level._level);
 

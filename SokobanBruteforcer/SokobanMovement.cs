@@ -194,7 +194,8 @@
                 return ExcludeSolutionByteArrayImpl(level, stepsCount, boxIndices, skipWallChecks);
             }
 
-            var snapshot = Level.GenerateSnapshotOld(level);
+            var snapshot = Level.GenerateSnapshot(level);
+            //var snapshot = Level.GenerateSnapshotOld(level);
             if (!boxIndices.HasValue)
             {
                 if (SolutionVariables._visitedLevelsSnapshots.ContainsKey(snapshot) && SolutionVariables._visitedLevelsSnapshots[snapshot] < stepsCount)
@@ -279,6 +280,7 @@
                     }
                     else
                     {
+                        SolutionVariables._levelsToBruteforce.RemoveByGrid(level);
                         SolutionVariables._pendingLevelsSnapshotsByte[level] = stepsCount;
                         return false;
                     }
@@ -311,6 +313,7 @@
                     }
                     else
                     {
+                        SolutionVariables._levelsToBruteforce.RemoveByGrid(level);
                         SolutionVariables._pendingLevelsSnapshotsByte[level] = stepsCount;
                         return false;
                     }

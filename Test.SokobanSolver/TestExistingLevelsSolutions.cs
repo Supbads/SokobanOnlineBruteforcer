@@ -52,6 +52,7 @@ namespace Test_SokobanSolver
             var soloveDuration = sw.ElapsedMilliseconds;
             Assert.IsTrue(res);
             Assert.Less(soloveDuration, 14 * 1000, "Sokoban level 19 took more than 14 seconds");
+            //14 seconds -> 7.7
         }
 
         [Test]

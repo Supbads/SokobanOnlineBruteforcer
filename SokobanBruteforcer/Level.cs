@@ -4,7 +4,7 @@ using SokobanBruteforcer.Interfaces;
 
 namespace SokobanBruteforcer
 {
-    public class Level : IHashable
+    public class Level : IHashable, IGridable
     {
         public static Dictionary<(int x, int y), byte> _solutions;
         public static SHA1 sha1  = new SHA1CryptoServiceProvider();
@@ -100,9 +100,14 @@ namespace SokobanBruteforcer
 
         public string GenerateSnapshot()
         {
-            return GenerateSnapshotOld(Grid);
+            //return GenerateSnapshotOld(Grid);
             //return GenerateSnapshotV3(Grid);
             return GenerateSnapshot(Grid);
+        }
+
+        public byte[,] GetGrid()
+        {
+            return Grid;
         }
 
         public static string GenerateSnapshotV2(byte[,] grid)
@@ -209,8 +214,8 @@ namespace SokobanBruteforcer
                 }
             }
 
-            //return string.Concat(md5.ComputeHash(buffer).Select(x => x.ToString("X2")));
-            return string.Concat(sha1.ComputeHash(buffer).Select(x => x.ToString("X2")));
+            return string.Concat(md5.ComputeHash(buffer).Select(x => x.ToString("X2")));
+            //return string.Concat(sha1.ComputeHash(buffer).Select(x => x.ToString("X2")));
         }
 
         public static string GenerateSnapshotV3(byte[,] lvl)

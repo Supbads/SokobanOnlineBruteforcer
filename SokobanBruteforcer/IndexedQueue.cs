@@ -88,7 +88,7 @@ namespace SokobanBruteforcer
         }
     }
 
-    public class IndexedQueue<T> where T : IHashable
+    public class IndexedQueue<T> : IndexedQueue where T : IHashable
     {
         private LinkedList<T> _queue;
         private Dictionary<string, LinkedListNode<T>> _indices;
@@ -142,7 +142,7 @@ namespace SokobanBruteforcer
             return _indices.ContainsKey(hash);
         }
 
-        public void RemoveByHash(string hash)
+        public override void RemoveByHash(string hash)
         {
             if (!_indices.ContainsKey(hash))
             {
@@ -159,7 +159,7 @@ namespace SokobanBruteforcer
         public bool Contains(T item)
         {
             return _indices.ContainsKey(item.GetHash());
-        }        
+        }
 
         //public T this[int index]
         //{
@@ -195,6 +195,87 @@ namespace SokobanBruteforcer
         //        _indices[newHash] = node;
         //    }
         //}
+    }
+
+    public class IndexedQueueGrid<T> : IndexedQueue where T : IGridable
+    {
+        private LinkedList<T> _queue;
+        private Dictionary<byte[,], LinkedListNode<T>> _indices;
+
+        public IndexedQueueGrid(int capacity)
+        {
+            _queue = new LinkedList<T>();
+            _indices = new Dictionary<byte[,], LinkedListNode<T>>(capacity, new ByteArrayComparer());
+        }
+
+        public int Count { get { return _queue.Count; } }
+
+        public T this[int index]
+        {
+            get { return _queue.ElementAt(index); }
+        }
+
+        public void Enqueue(T item)
+        {
+            byte[,] hash = item.GetGrid();
+            if (_indices.ContainsKey(hash))
+                throw new ArgumentException("Item already exists in queue");
+
+            LinkedListNode<T> node = _queue.AddLast(item);
+            _indices[hash] = node;
+        }
+
+        public bool Any()
+        {
+            return _queue.Any();
+        }
+
+        public T Dequeue()
+        {
+            if (_queue.Count == 0)
+                throw new InvalidOperationException("Queue is empty");
+
+            T item = _queue.First.Value;
+            _queue.RemoveFirst();
+            _indices.Remove(item.GetGrid());
+            return item;
+        }
+
+        public bool ContainsGrid(byte[,] grid)
+        {
+            return _indices.ContainsKey(grid);
+        }
+
+        public override void RemoveByGrid(byte[,] grid)
+        {
+            if (!_indices.ContainsKey(grid))
+            {
+                return; //throw new ArgumentException("Item does not exist in queue");
+            }
+
+            LinkedListNode<T> node = _indices[grid];
+
+            _indices.Remove(grid);
+            _queue.Remove(node);
+        }
+
+        public bool Contains(T item)
+        {
+            return _indices.ContainsKey(item.GetGrid());
+        }
+    }
+
+    public abstract class IndexedQueue
+    {
+        public virtual void RemoveByHash(string hash)
+        {
+            throw new NotImplementedException("fcktup");
+        }
+
+        public virtual void RemoveByGrid(byte[,] grid)
+        {
+            throw new NotImplementedException("fcktup");
+        }
     }
 
 }

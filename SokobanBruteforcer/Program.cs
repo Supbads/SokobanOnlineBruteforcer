@@ -27,7 +27,7 @@ public class Program
         var currentSolution = EmptyHolesTest.LevelHolyHow4Solutions;
         Level._solutions = currentSolution;
         var initialLevel = new Level(EmptyHolesTest.LevelHolyHow4, null, 0);
-        bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 100);
+        bool res = SokobanSolver.SolveSokobanLevel(initialLevel, false, 100);
 
 
 
