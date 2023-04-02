@@ -221,15 +221,15 @@ namespace SokobanBruteforcer
             return string.Concat(sha1.ComputeHash(buffer).Select(x => x.ToString("X2")));
         }
 
-        public List<byte[,]> GetGridsChain(bool reverse = true)
+        public List<(byte[,] grid, short step)> GetGridsChain(bool reverse = true)
         {
-            List<byte[,]> grids = new List<byte[,]>(StepsCount != int.MaxValue ? StepsCount : 1);
+            List<(byte[,] grid, short step)> grids = new List<(byte[,], short)>(StepsCount != int.MaxValue ? StepsCount : 1);
             
-            grids.Add(Grid);
+            grids.Add((Grid, StepsCount));
             var currentLvl = PreviousLevel;
             while (currentLvl != null)
             {
-                grids.Add(currentLvl.Grid);
+                grids.Add((currentLvl.Grid, currentLvl.StepsCount));
                 currentLvl = currentLvl.PreviousLevel;
             }
 
@@ -263,8 +263,8 @@ namespace SokobanBruteforcer
             var stepCount = 0;
             foreach (var grid in gridsChain)
             {
-                PrintLevel(grid);
-                Console.WriteLine($"Step {stepCount}");
+                Console.WriteLine($"Step {grid.step}");
+                PrintLevel(grid.grid);
                 stepCount += 1;
             }
         }

@@ -19,24 +19,14 @@ namespace Test_SokobanSolver
             var initialLevel = new Level(SokobanJuniorLayouts.SokobanJunior1, null, 0);
 
             var sw = Stopwatch.StartNew();
-            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true);
+            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 30);
             var soloveDuration = sw.ElapsedMilliseconds;
 
             Assert.IsTrue(res);
-            Assert.Less(soloveDuration, 3 * 1000, "Sokoban junior level 1 took more than 7 seconds");
+            Assert.Less(soloveDuration, 3 * 1000, "Sokoban junior level 1 took more than 3 seconds");
             //6.5 -> 2.1~ after optimization
             //21 steps best
-        }
-
-        [Test]
-        public void SolveModernLevelHolyHow4()
-        {
-            var currentSolution = EmptyHolesTest.LevelHolyHow4Solutions;
-            Level._solutions = currentSolution;
-            var initialLevel = new Level(EmptyHolesTest.LevelHolyHow4, null, 0);            
-            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 100);
-            Assert.IsTrue(res);
-            //steps should be 96
+            //1.1 sec snapshotv2
         }
 
         [Test]
@@ -55,6 +45,18 @@ namespace Test_SokobanSolver
             //14 seconds -> 7.7 pending items opt -> 4.7 sb solution
         }
 
+        [Test]
+        public void SolveModernLevelHolyHow4()
+        {
+            var currentSolution = EmptyHolesTest.LevelHolyHow4Solutions;
+            Level._solutions = currentSolution;
+            var initialLevel = new Level(EmptyHolesTest.LevelHolyHow4, null, 0);            
+            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 100);
+            Assert.IsTrue(res);
+            //steps should be 96
+        }
+
+        
         [Test]
         public void SolveSokobanLevel21()
         {

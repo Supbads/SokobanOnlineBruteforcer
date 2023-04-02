@@ -17,5 +17,21 @@
 
             return copyArray;
         }
+
+        public static (int x, int y) FindHeroIndex(byte[,] grid)
+        {
+            for (int i = 0; i < grid.GetLength(0); i++)
+            {
+                for (int j = 0; j < grid.GetLength(1); j++)
+                {
+                    if (grid[i, j] == GridLayouts.HeroTile)
+                    {
+                        return (i, j);
+                    }
+                }
+            }
+
+            throw new Exception("no hero index found");
+        }
     }
 }

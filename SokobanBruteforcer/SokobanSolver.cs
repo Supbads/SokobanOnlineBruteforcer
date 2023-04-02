@@ -75,6 +75,9 @@ namespace SokobanBruteforcer
                         if (level.StepsCount < SolutionVariables._bestSteps)
                         {
                             Console.WriteLine($"New best Solution Found. Steps: {level.StepsCount}");
+                            Console.WriteLine($"Time: {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).ToString("mm\\:ss\\:FFFF")}");
+                            Console.WriteLine($"Solution found in {attempts} attempts");
+
                             //PrintLevel(level.Grid);
                             SolutionVariables._bestSteps = level.StepsCount;
                             SolutionVariables._bestLevel = level;
@@ -205,7 +208,10 @@ namespace SokobanBruteforcer
             Console.WriteLine($"WallChecksExcludes: {SokobanMovement.wallChecksFuncInvalidations}, excludedSolutions: {SokobanMovement.excludedSolutions}");
             Console.WriteLine($"WallChecksExcludesHacks: {SokobanMovement.wallChecksFuncInvalidationsHack}, excludedSolutionsQuadro: {SokobanMovement.wallChecksFuncInvalidationsQuadro}");
             Console.WriteLine($"EqualsChecks: {ByteArrayComparer.EqualsChecks}, Hashes: {ByteArrayComparer.HashCodes}");
-
+            Console.WriteLine($"ImprovementLogicCount: {SokobanMovementQueueUpOnlyPushes.SolveWhileQueueingOnlyMovementsCount}");
+            Console.WriteLine($"MovementsDequeueCount: {SokobanMovementQueueUpOnlyPushes.SolveWhileQueueingOnlyMovementsDequeueCount}");
+            Console.WriteLine($"MovementsProcessedCount: {SokobanMovementQueueUpOnlyPushes.SolveWhileQueueingOnlyMovementsProcessedCount}");
+            
             return SolutionVariables._bestLevel != null;
         }
 
@@ -246,6 +252,9 @@ namespace SokobanBruteforcer
 
         static void Solve(Level level)
         {
+            SokobanMovementQueueUpOnlyPushes.SolveWhileQueueingOnlyMovements(level);
+            return;
+
             var heroIndex = level.FindHeroIndex();
             if (level.Pushed)
             {

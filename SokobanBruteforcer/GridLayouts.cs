@@ -116,7 +116,8 @@
             { 0, 0, 0, 1, 1, 1, 0, 0,  },
             { 0, 0, 0, 0, 0, 0, 0, 0,  },
         };
-
+        //182 steps 
+        //RRDDRRRDDLDLLUUULLDDRLUURRRRRDDLDLLUUDDRRURUULLLDDLLUUUURRRRDULLLLDDDDRRDRRURUULRDDLUUDDDLLURLLLUUUURRDDDUUULLDDDDRRDRRURUULLRRDDLDLLUUURRRDDLLDLUUDRRRUULDRDLLDLULLUUUURRRRDDRDDLURUL
         public static Predicate<(int x, int y)> Level19InvalidationImprovement =>
             (boxIndices) => boxIndices.x == 1 || boxIndices.x == 6 || boxIndices.y == 1 || boxIndices.y == 6;
 
@@ -127,8 +128,7 @@
             {(3,2), 5 },
             {(3,3), 6 },
             {(4,3), 7 },
-        }; 
-        //RRDDRRRDDLDLLUUULLDDRLUURRRRRDDLDLLUUDDRRURUULLLDDLLUUUURRRRDULLLLDDDDRRDRRURUULRDDLUUDDDLLURLLLUUUURRDDDUUULLDDDDRRDRRURUULLRRDDLDLLUUURRRDDLLDLUUDRRRUULDRDLLDLULLUUUURRRRDDRDDLURUL
+        };
 
         public static byte[,] Level21 = new byte[,]
         {
