@@ -252,8 +252,8 @@ namespace SokobanBruteforcer
 
         static void Solve(Level level)
         {
-            SokobanMovementQueueUpOnlyPushes.SolveWhileQueueingOnlyMovements(level);
-            return;
+            //SokobanMovementQueueUpOnlyPushes.SolveWhileQueueingOnlyMovements(level);
+            //return;
 
             var heroIndex = level.FindHeroIndex();
             if (level.Pushed)

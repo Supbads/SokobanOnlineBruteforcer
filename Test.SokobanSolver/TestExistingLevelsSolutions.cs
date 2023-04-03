@@ -19,7 +19,7 @@ namespace Test_SokobanSolver
             var initialLevel = new Level(SokobanJuniorLayouts.SokobanJunior1, null, 0);
 
             var sw = Stopwatch.StartNew();
-            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 30);
+            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 22);
             var soloveDuration = sw.ElapsedMilliseconds;
 
             Assert.IsTrue(res);
@@ -91,6 +91,22 @@ namespace Test_SokobanSolver
             var soloveDuration = sw.ElapsedMilliseconds;
             Assert.IsTrue(res);
             
+        }
+
+        [Test]
+        public void SolveMicrobanLevel61()
+        {
+            var currentSolution = MicrobanLayout.Level69SolutionIndices;
+            Level._solutions = currentSolution;
+            var initialLevel = new Level(MicrobanLayout.Level69, null, 0);
+
+            SolutionVariables._levelInvalidationImprovement = MicrobanLayout.Level69InvalidationImprovement;
+            var sw = Stopwatch.StartNew();
+            bool res = SokobanSolver.SolveSokobanLevel(initialLevel, true, 102);
+            var soloveDuration = sw.ElapsedMilliseconds;
+            Assert.Less(soloveDuration, 100, "Microban level 61 solved for more than 100 ms");
+            Assert.IsTrue(res);
+
         }
     }
 }

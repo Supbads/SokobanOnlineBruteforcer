@@ -243,5 +243,37 @@
 
         //8 = hole
         //9 = holeBlock
+
+
+    }
+
+    public class MicrobanLayout
+    {
+        public static byte[,] Level69 = new byte[,]
+        {
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0 }, //10, 9
+            { 0, 1, 1, 1, 1, 1, 1, 0, 0 },
+            { 0, 1, 0, 0, 0, 0, 1, 0, 0 },
+            { 0, 1, 0, 1, 1, 1, 2, 0, 0 },
+            { 0, 1, 0, 0, 0, 3, 0, 0, 0 },
+            { 0, 1, 0, 1, 1, 1, 1, 1, 0 },
+            { 0, 1, 1, 3, 3, 1, 3, 1, 0 },
+            { 0, 0, 0, 0, 1, 1, 1, 0, 0 },
+            { 0, 0, 0, 0, 1, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        }; //https://www.sokobanonline.com/play/web-archive/david-w-skinner/microban/821_microban-61
+
+        public static Dictionary<(int, int), byte> Level69SolutionIndices = new Dictionary<(int, int), byte>()
+        {
+            { (3, 3), 3 },
+            { (3, 4), 3 },
+            { (3, 5), 3 },
+            { (8, 4), 3 },
+        };
+
+        public static Predicate<(int x, int y)> Level69InvalidationImprovement =>
+            (boxIndices) => boxIndices.y == 1 || boxIndices.y == 7;
+
+
     }
 }

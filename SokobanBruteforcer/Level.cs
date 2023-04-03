@@ -118,11 +118,12 @@ namespace SokobanBruteforcer
             //return GenerateSnapshotV4(grid);
         }
 
+        public static long snapshotv2Hash = 17;
         public static string GenerateSnapshotV2(byte[,] grid)
         {
             unchecked
             {
-                long hash = 17;
+                snapshotv2Hash = 17;
 
                 for (int i = 0; i < grid.GetLength(0); i++)
                 {
@@ -130,13 +131,13 @@ namespace SokobanBruteforcer
                     {
                         if(grid[i, j] != 0)
                         {
-                            hash = hash * 23 + Convert.ToInt64(Math.Pow(grid[i, j], i));
-                            hash = hash * 23 + Convert.ToInt64(Math.Pow(grid[i, j], j));                            
+                            snapshotv2Hash = snapshotv2Hash * 23 + Convert.ToInt64(Math.Pow(grid[i, j], i));
+                            snapshotv2Hash = snapshotv2Hash * 23 + Convert.ToInt64(Math.Pow(grid[i, j], j));                            
                         }
                     }
                 }
 
-                return hash.ToString();
+                return snapshotv2Hash.ToString();
             }
         }
 
@@ -206,14 +207,16 @@ namespace SokobanBruteforcer
         //    return snapshot;
         //}
 
+        public static int SnapshotIndx = 0;
         public static string GenerateSnapshot(byte[,] grid)
         {
             var buffer = new byte[SolutionVariables._xLength * SolutionVariables._yLength];
+            SnapshotIndx = 0;
             for (int i = 0; i < SolutionVariables._xLength; i++)
             {
                 for (int j = 0; j < SolutionVariables._yLength; j++)
                 {
-                    buffer[(SolutionVariables._xLength * i) + j] = grid[i, j];
+                    buffer[SnapshotIndx++] = grid[i, j];
                 }
             }
 
